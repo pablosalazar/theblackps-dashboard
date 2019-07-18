@@ -1,5 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import "./assets/css/vendor/bootstrap.min.css";
+
+let render = () => {
+  import('./assets/css/sass/themes/theblack-theme.scss').then(x => {
+     require('./AppRenderer');
+  });
+};
+render();
