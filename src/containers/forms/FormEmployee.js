@@ -19,7 +19,7 @@ class FormEmployee extends Component {
     this.validate = this.validate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
-      data: {
+      data : {
         code: '',
         firstname: '',
         lastname: '',
@@ -32,12 +32,11 @@ class FormEmployee extends Component {
         password: '',
         role: '',
       }
-      
     }
   }
 
   handleSubmit(values) {
-    console.log(values);
+    
     // axios.post('http://localhost/theblackps/public/api/employees', values)
     // .then(function (response) {
     //   console.log(values);
@@ -68,31 +67,46 @@ class FormEmployee extends Component {
   }
 
   handleOnChange = (e) => {
+    
     this.setState({
-      data: {
+      data : {
         ...this.state.data,
         [e.target.name]: e.target.value
       }
     })
-
-    this.updateUsername();
   }
 
-  updateUsername() {
-    const { firstname, lastname, code } = this.state.data;
-    const username = firstname.substring(0, 2) + lastname.substring(0, 2) + code;
+  generateCredentials = () => {
+    const { data } = this.state;
+    const { firstname, lastname, document_number, code } = data;
+    let first_firstname, second_firstname, first_lastname, second_lastname;
+    
+    first_firstname = firstname.trim().split(" ")[0];
+    second_firstname = firstname.trim().split(" ")[1];
+   
+    first_lastname = lastname.trim().split(" ")[0];
+    second_lastname = lastname.trim().split(" ")[1];
+    
+    
+    let username = firstname.substring(0, 2) + first_lastname.substring(0, 2);
+    if (second_lastname) {
+      username += second_lastname.substring(0, 2);
+    } 
+
+    username += code;
+    username = username.toLowerCase();
+
     
     this.setState({
       data: {
-        ...this.state.data,
+        ...data,
         username,
-        'password': 'asdfasdfasdf'
       }
     })
   }
 
   render() {
-    console.log(this.state.data);
+    const { data } = this.state;
     return (
       <Row className="mb-4">
         <Colxx xxs="12">
@@ -103,7 +117,7 @@ class FormEmployee extends Component {
             <CardBody>
               <Formik
                 validate={this.validate}
-                initialValues={this.state.data}
+                initialValues={data}
                 onSubmit={this.handleSubmit}
               >
                 {({ errors, touched }) => (
@@ -113,25 +127,25 @@ class FormEmployee extends Component {
                         <h6 className="mb-4">Datos personales</h6>
                         <FormGroup>
                           <Label>Código</Label>
-                          <Field className="form-control" name="code" value={this.state.code} onChange={this.handleOnChange}/>
+                          <Field className="form-control" name="code" value={data.code} onChange={this.handleOnChange}/>
                           {errors.code && touched.code && <div className="invalid-feedback d-block">{errors.code}</div>}
                         </FormGroup>
 
                         <FormGroup>
                           <Label>Nombre</Label>
-                          <Field className="form-control" name="firstname" value={this.state.firstname} onChange={this.handleOnChange} />
+                          <Field className="form-control" name="firstname" value={data.firstname} onChange={this.handleOnChange} />
                           {errors.firstname && touched.firstname && <div className="invalid-feedback d-block">{errors.firstname}</div>}
                         </FormGroup>
 
                         <FormGroup>
                           <Label>Apellidos</Label>
-                          <Field className="form-control" name="lastname" value={this.state.lastname} onChange={this.handleOnChange} />
+                          <Field className="form-control" name="lastname" value={data.lastname} onChange={this.handleOnChange} />
                           {errors.lastname && touched.lastname && <div className="invalid-feedback d-block">{errors.lastname}</div>}
                         </FormGroup>
 
                         <FormGroup>
                           <Label>Tipo de documento</Label>
-                          <Field className="form-control" component="select" name="document_type" value={this.state.document_type} onChange={this.handleOnChange}>
+                          <Field className="form-control" component="select" name="document_type" value={data.document_type} onChange={this.handleOnChange}>
                             <option value="">-- Seleccione una opción --</option>
                             <option value="CC">CC</option>
                             <option value="TI">TI</option>
@@ -142,19 +156,19 @@ class FormEmployee extends Component {
 
                         <FormGroup>
                           <Label>Número de documento</Label>
-                          <Field className="form-control" name="document_number" value={this.state.document_number} onChange={this.handleOnChange} />
+                          <Field className="form-control" name="document_number" value={data.document_number} onChange={this.handleOnChange} />
                           {errors.document_number && touched.document_number && <div className="invalid-feedback d-block">{errors.document_number}</div>}
                         </FormGroup>
                         
                         <FormGroup>
                             <Label>Email</Label>
-                            <Field className="form-control" name="email" value={this.state.email} onChange={this.handleOnChange} />
+                            <Field className="form-control" name="email" value={data.email} onChange={this.handleOnChange} />
                             {errors.email && touched.email && <div className="invalid-feedback d-block">{errors.email}</div>}
                         </FormGroup>
 
                         <FormGroup>
                           <Label>Teléfono</Label>
-                          <Field className="form-control" name="phone" value={this.state.phone} onChange={this.handleOnChange} />
+                          <Field className="form-control" name="phone" value={data.phone} onChange={this.handleOnChange} />
                           {errors.phone && touched.phone && <div className="invalid-feedback d-block">{errors.phone}</div>}
                         </FormGroup>
                       </Colxx>
@@ -162,25 +176,32 @@ class FormEmployee extends Component {
                         <h6 className="mb-4">Datos de la cuenta</h6>
                         <FormGroup>
                           <Label>Username</Label>
-                          <Field className="form-control" name="username" value={this.state.username} onChange={this.handleOnChange} />
+                          <Field className="form-control" name="username" value={data.username} onChange={this.handleOnChange} />
                           {errors.username && touched.username && <div className="invalid-feedback d-block">{errors.username}</div>}
                         </FormGroup>
 
                         <FormGroup>
                           <Label>Contraseña</Label>
-                          <Field className="form-control" type="password" name="password" value={this.state.password} onChange={this.handleOnChange} />
+                          <Field className="form-control" name="password" value={data.password} onChange={this.handleOnChange} />
                           {errors.password && touched.password && <div className="invalid-feedback d-block">{errors.password}</div>}
                         </FormGroup>
 
                         <FormGroup>
                           <Label>Rol</Label>
-                          <Field className="form-control" component="select" name="role" value={this.state.role} onChange={this.handleOnChange}>
+                          <Field className="form-control" component="select" name="role" value={data.role} onChange={this.handleOnChange}>
                             <option value="">-- Seleccione una opción --</option>
                             <option value="Empleado">Empleado</option>
                             <option value="Admin">Admin</option>
                           </Field>
                           {errors.role && touched.role && <div className="invalid-feedback d-block">{errors.role}</div>}
                         </FormGroup>
+                       
+                        {/* <div className="alert alert-info">
+                          Debes ingresar el codigo el nombre y el apellido
+                        </div> */}
+                        <div className="text-right">
+                          <Button color="info" onClick={this.generateCredentials}>Generar credenciales</Button>
+                        </div>
                       </Colxx>
                     </Row>
                     <div className="mt-5 text-right">
