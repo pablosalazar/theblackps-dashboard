@@ -9,11 +9,17 @@ const DataListView = ({ item, isSelect, collect, onCheckItem }) => {
       <Card >
         <div className="pl-2 d-flex flex-grow-1 min-width-zero">
           <div className="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
-            <NavLink to='' className="w-30 w-sm-100">
+            <NavLink to={`/empleados/detalle/${item.id}`} className="w-30 w-sm-100">
               <p className="list-item-heading mb-1 truncate">
               {item.firstname} {item.lastname}
               </p>
             </NavLink>
+            <p className="mb-1 w-15 w-sm-100">
+              {item.code}
+            </p>
+            <p className="mb-1 w-15 w-sm-100">
+              {item.username}
+            </p>
             <p className="mb-1 w-15 w-sm-100">
               {item.phone}
             </p>
@@ -25,7 +31,7 @@ const DataListView = ({ item, isSelect, collect, onCheckItem }) => {
             </p>
           </div>
           <div className="custom-control custom-checkbox pl-1 align-self-center pr-4">
-            <NavLink to={`/empleados/nuevo`} className="btn btn-info btn-sm">
+            <NavLink to={`/empleados/detalle/${item.id}`} className="btn btn-info btn-sm">
               Detalle
             </NavLink>
           </div>

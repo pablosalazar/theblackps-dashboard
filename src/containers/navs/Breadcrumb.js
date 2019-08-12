@@ -3,11 +3,11 @@ import { Breadcrumb, BreadcrumbItem } from "reactstrap";
 import { NavLink } from "react-router-dom";
 
 const getMenuTitle = sub => {
-  return sub;
+  return sub.charAt(0).toUpperCase() + sub.slice(1).toLowerCase();;
 };
 
 const getUrl = (path, sub, index) => {
-  if (index === 0) {
+  if (index !== 0) {
     return "";
   } else {
     return path.split(sub)[0] + sub;
@@ -15,9 +15,10 @@ const getUrl = (path, sub, index) => {
 };
 
 const BreadcrumbContainer = ({ heading, match }) => {
+  
   return (
     <Fragment>
-      {heading && <h1>heading</h1>}
+      <h1>{heading}</h1>
       <BreadcrumbItems match={match} />
     </Fragment>
   );

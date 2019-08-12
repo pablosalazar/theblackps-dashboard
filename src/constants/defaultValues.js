@@ -7,7 +7,7 @@ export const defaultMenuType = "menu-default";
 export const subHiddenBreakpoint = 1440;
 export const menuHiddenBreakpoint = 768;
 
-
+export const servicePath = "http://localhost/theblackps/public/api/";
 /* 
 Color Options:
 "light.purple", "light.blue", "light.green", "light.orange", "light.red", "dark.purple", "dark.blue", "dark.green", "dark.orange", "dark.red"

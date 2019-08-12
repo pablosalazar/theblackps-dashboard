@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Formik, Form, Field } from 'formik';
+import { Redirect, NavLink, Link } from 'react-router-dom';
 import axios from "axios";
 
 import {
@@ -15,11 +16,14 @@ import { Colxx, Separator } from "../../components/common/CustomBootstrap";
 
 class FormEmployee extends Component {
   constructor(props) {
+    
     super(props);
-    this.validate = this.validate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.state = {
-      data : {
+    let data;
+    if (props.employee) {
+      data = props.employee;
+    }
+    else {
+      data = {
         code: '',
         firstname: '',
         lastname: '',
@@ -27,47 +31,87 @@ class FormEmployee extends Component {
         document_number: '',
         email: '',
         phone: '',
-        email: '',
         username: '',
         password: '',
         role: '',
       }
     }
-  }
-
-  handleSubmit(values) {
     
-    // axios.post('http://localhost/theblackps/public/api/employees', values)
-    // .then(function (response) {
-    //   console.log(values);
-    // })
-    // .catch(function (error) {
-    //   console.log(error);
-    // });
+    this.state = {
+      data,
+      loading: false,
+      error: null,
+      error_generate_credentials: false,
+      redirect: false,
+      action: props.employee? 'edit': 'create',
+    }
   }
 
-  validate(values) {
+  handleSubmit = () => {
+    const { data, action } = this.state;
+
+    this.setState({
+      loading: true,
+    })
+
+    if (action === 'create') {
+      axios.post('http://localhost/theblackps/public/api/employees', data)
+      .then((response) => {
+        this.setState({loading: false, redirect:true});
+      })
+      .catch((error) => {
+        this.handleError(error);
+      });
+
+    } else if (action === 'edit') {
+      axios.put('http://localhost/theblackps/public/api/employees/' + data.id, data)
+      .then((response) => {
+        this.setState({loading: false, redirect:true});
+      })
+      .catch((error) => {
+        this.handleError(error);
+      });
+    }
+  }
+
+  handleError = (error) => {
+    this.setState({
+      error: error.response ? error.response.data.error : String(error),
+      loading: false,
+    });
+    window.scrollTo(100, 0);
+  }
+
+  validate = () => {
+    const values = this.state.data;
     let errors = {};
     
-    // Object.keys(values).forEach((value) => {
-    //   if (values[value] === '' && value !== 'password_confirmation') {
-    //     errors[value] = 'Este campo es obligatorio';
-    //   }
-    // });
+    Object.keys(values).forEach((value) => {
+      if (values[value] === '') {
+        errors[value] = 'Este campo es obligatorio';
+      }
+    });
 
-    // if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    //   errors.email = 'Escribe una dirección de correo electrónico valida';
-    // }
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+      errors.email = 'Escribe una dirección de correo electrónico valida';
+    }
 
-    // if (values.password !== values.password_confirmation) {
-    //   errors.password_confirmation = 'El password no coincide';
-    // }
-
+    if (values.document_number && !Number.isInteger(parseInt(values.document_number, 10))) {
+      errors.document_number = "Ingresa solo números";
+    }
     return errors;
   }
 
   handleOnChange = (e) => {
-    
+    const { data, error_generate_credentials } = this.state;
+    const { firstname, lastname, document_number, code } = data;
+
+    if(error_generate_credentials && firstname && lastname && document_number && code) {
+      this.setState({
+        error_generate_credentials: false,
+      })
+    }
+
     this.setState({
       data : {
         ...this.state.data,
@@ -80,6 +124,13 @@ class FormEmployee extends Component {
     const { data } = this.state;
     const { firstname, lastname, document_number, code } = data;
     let first_firstname, second_firstname, first_lastname, second_lastname;
+
+    if(!firstname || !lastname || !document_number || !code) {
+      this.setState({
+        error_generate_credentials: true,
+      })
+      return null;
+    }
     
     first_firstname = firstname.trim().split(" ")[0];
     second_firstname = firstname.trim().split(" ")[1];
@@ -87,7 +138,7 @@ class FormEmployee extends Component {
     first_lastname = lastname.trim().split(" ")[0];
     second_lastname = lastname.trim().split(" ")[1];
     
-    
+    // Create username
     let username = firstname.substring(0, 2) + first_lastname.substring(0, 2);
     if (second_lastname) {
       username += second_lastname.substring(0, 2);
@@ -96,23 +147,74 @@ class FormEmployee extends Component {
     username += code;
     username = username.toLowerCase();
 
-    
+    // Create password
+    let initialsName = first_firstname.substring(0, 1);
+    if (second_firstname) {
+      initialsName += second_firstname.substring(0, 1);
+    }
+    initialsName += first_lastname.substring(0, 1);
+    if (second_lastname) {
+      initialsName += second_lastname.substring(0, 1);
+    }
+    const password = document_number + initialsName.toUpperCase();
+   
     this.setState({
       data: {
         ...data,
         username,
+        password,
       }
     })
   }
 
-  render() {
-    const { data } = this.state;
+  showErrorMessages = () => {
+    const { error } = this.state;
+    if (typeof error === 'string' ) {
+      return error + '';
+    }
+
+    const messages = Object.values(error);
     return (
+      <Fragment>
+        <h5>Se presentó un problema con los siguientes campos: </h5>
+        <ul>
+          {messages.map((message, index) => {
+            return <li key={index}>{message[0]}</li>
+          })
+
+          }
+        </ul>
+      </Fragment>
+    )
+  }
+
+  onDismiss =()=> {
+    this.setState({ error: null });
+  }
+
+  routeChange = () => {
+    let path = `newPath`;
+    this.props.history.push(path);
+  }
+
+  render() {
+    const { data, loading, error, error_generate_credentials, redirect, action } = this.state;
+    if (redirect) {
+      return <Redirect to='/empleados/lista'/>;
+    }
+    return (
+
       <Row className="mb-4">
         <Colxx xxs="12">
-          <Alert color="danger" className="rounded mb-4">
-            Corrige los siguientes campos:
-          </Alert>
+          {loading && <div className="loading" />}
+          {error && 
+            <Alert 
+              color="danger" 
+              className="mb-4"
+              toggle={this.onDismiss}
+            >
+              {this.showErrorMessages()}
+            </Alert>}
           <Card>
             <CardBody>
               <Formik
@@ -175,7 +277,7 @@ class FormEmployee extends Component {
                       <Colxx sm={6}>
                         <h6 className="mb-4">Datos de la cuenta</h6>
                         <FormGroup>
-                          <Label>Username</Label>
+                          <Label>Usuario</Label>
                           <Field className="form-control" name="username" value={data.username} onChange={this.handleOnChange} />
                           {errors.username && touched.username && <div className="invalid-feedback d-block">{errors.username}</div>}
                         </FormGroup>
@@ -190,22 +292,25 @@ class FormEmployee extends Component {
                           <Label>Rol</Label>
                           <Field className="form-control" component="select" name="role" value={data.role} onChange={this.handleOnChange}>
                             <option value="">-- Seleccione una opción --</option>
-                            <option value="Empleado">Empleado</option>
-                            <option value="Admin">Admin</option>
+                            <option value="EMPLEADO">Empleado</option>
+                            <option value="ADMIN">Admin</option>
                           </Field>
                           {errors.role && touched.role && <div className="invalid-feedback d-block">{errors.role}</div>}
                         </FormGroup>
-                       
-                        {/* <div className="alert alert-info">
-                          Debes ingresar el codigo el nombre y el apellido
-                        </div> */}
+
+                        {error_generate_credentials &&
+                          <div className="alert alert-info">
+                            Para generar el usuario y la contraseña primero debes ingresar el código, nombre, apellidos y número de documento del empleado.
+                          </div>
+                        }
                         <div className="text-right">
-                          <Button color="info" onClick={this.generateCredentials}>Generar credenciales</Button>
+                          <Button outline color="dark" onClick={this.generateCredentials} disabled={loading}>Generar credenciales</Button>
                         </div>
                       </Colxx>
                     </Row>
                     <div className="mt-5 text-right">
-                      <Button color="primary" type="submit">Guardar</Button>
+                      <NavLink to="/empleados/lista" className="btn btn-outline-dark mr-3">Salir </NavLink>
+                      <Button color="primary" type="submit" disabled={loading}>{action==='create'? 'Agregar empleado': 'Guardar cambios'}</Button>
                     </div>
                   </Form>
                 )}
