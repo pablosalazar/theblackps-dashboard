@@ -6,11 +6,10 @@ import axios from "axios";
 import { servicePath } from "../../../constants/defaultValues";
 
 import DataListView from "../../../containers/pages/DataListView";
+import Pagination from "../../../containers/pages/Pagination";
 import ListPageHeading from "../../../containers/pages/ListPageHeading";
 
-function collect(props) {
-  return { data: props.data };
-}
+
 const apiUrl = servicePath + "employees";
 class ListEmployees extends Component {
 
@@ -23,14 +22,14 @@ class ListEmployees extends Component {
 
       selectedPageSize: 10,
       orderOptions: [
-        { column: "firstname", label: "Nombre" },
+        { column: "full_name", label: "Nombre" },
         { column: "code", label: "Código" },
         { column: "role", label: "Rol" },
         { column: "username", label: "Usuario" },
-        { column: "email", label: 'email'}
+        { column: "email", label: 'Email'}
       ],
       pageSizes: [10, 20, 30, 50, 100],
-      selectedOrderOption: { column: "firstname", label: "Nombre" },
+      selectedOrderOption: { column: "first_name", label: "Nombre" },
       currentPage: 1,
       totalItemCount: 0,
       totalPage: 1,
@@ -49,16 +48,20 @@ class ListEmployees extends Component {
       selectedOrderOption,
       search
     } = this.state;
-    this.setState({items: [], isLoading: true})
     axios
       .get(
-        `${apiUrl}?pageSize=${selectedPageSize}&currentPage=${currentPage}&orderBy=${
+        `${apiUrl}?pageSize=${selectedPageSize}&page=${currentPage}&orderBy=${
           selectedOrderOption.column
         }&search=${search}`
       )
-      .then((response) => {
+      .then(response => {
+        return response.data;
+      })
+      .then(response => {
         this.setState({
-          items: response.data.data,
+          totalPage: response.last_page,
+          items: response.data,
+          totalItemCount: response.total,
           isLoading: false,
         });
       })
@@ -71,14 +74,12 @@ class ListEmployees extends Component {
   }
 
   onSearchKey = e => {
-    if (e.key === "Enter") {
-      this.setState(
-        {
-          search: e.target.value.toLowerCase()
-        },
-        () => this.dataListRender()
-      );
-    }
+    this.setState(
+      {
+        search: e.target.value.toLowerCase()
+      },
+      () => this.dataListRender()
+    );
   };
 
   changeOrderBy = column => {
@@ -88,6 +89,24 @@ class ListEmployees extends Component {
           x => x.column === column
         )
       },
+      () => this.dataListRender()
+    );
+  };
+
+  changePageSize = size => {
+    this.setState(
+      {
+        selectedPageSize: size,
+        currentPage: 1
+      },
+      () => this.dataListRender()
+    );
+  };
+
+  onChangePage = page => {
+    this.setState({
+      currentPage: page
+    },
       () => this.dataListRender()
     );
   };
@@ -106,7 +125,8 @@ class ListEmployees extends Component {
       orderOptions,
       pageSizes,
       modalOpen,
-      categories
+      categories,
+      search
     } = this.state;
     const { match } = this.props;
     const startIndex = (currentPage - 1) * selectedPageSize;
@@ -138,19 +158,19 @@ class ListEmployees extends Component {
             totalItemCount={totalItemCount}
             selectedPageSize={selectedPageSize}
             changeOrderBy={this.changeOrderBy}
+            changePageSize={this.changePageSize}
             selectedOrderOption={selectedOrderOption}
             onSearchKey={this.onSearchKey}
             orderOptions={orderOptions}
             pageSizes={pageSizes}
           />
           <Row>
-            
             {items.length === 0?
               <Colxx xxs="12" className="mb-3">
               <Alert
                 color="dark"
               >
-                No se encontrarón empleados registrados
+                No se encontrarón resultados
               </Alert>
             </Colxx>
             : items.map(item => (
@@ -159,6 +179,11 @@ class ListEmployees extends Component {
                   item={item}
                 />
             ))}{" "}
+            <Pagination
+              currentPage={this.state.currentPage}
+              totalPage={this.state.totalPage}
+              onChangePage={i => this.onChangePage(i)}
+            />
           </Row>
         </div>
       </Fragment>

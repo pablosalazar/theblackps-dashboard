@@ -21,7 +21,7 @@ class EditEmployee extends Component {
     axios.get('http://localhost/theblackps/public/api/employees/' + employeeId)
       .then(response => {
         this.setState({
-          employee: response.data.data,
+          employee: response.data,
           isLoading: false,
         })
       })

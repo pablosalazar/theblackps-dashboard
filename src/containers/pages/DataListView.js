@@ -11,7 +11,7 @@ const DataListView = ({ item, isSelect, collect, onCheckItem }) => {
           <div className="card-body align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero align-items-lg-center">
             <NavLink to={`/empleados/detalle/${item.id}`} className="w-30 w-sm-100">
               <p className="list-item-heading mb-1 truncate">
-              {item.firstname} {item.lastname}
+              {item.first_name} {item.last_name}
               </p>
             </NavLink>
             <p className="mb-1 w-15 w-sm-100">
@@ -21,10 +21,7 @@ const DataListView = ({ item, isSelect, collect, onCheckItem }) => {
               {item.username}
             </p>
             <p className="mb-1 w-15 w-sm-100">
-              {item.phone}
-            </p>
-            <p className="mb-1 w-15 w-sm-100">
-              {item.email}
+              {item.document_number}
             </p>
             <p className="mb-1 w-15 w-sm-100">
               {item.role}

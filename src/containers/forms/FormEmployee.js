@@ -25,8 +25,8 @@ class FormEmployee extends Component {
     else {
       data = {
         code: '',
-        firstname: '',
-        lastname: '',
+        first_name: '',
+        last_name: '',
         document_type: '',
         document_number: '',
         email: '',
@@ -104,9 +104,9 @@ class FormEmployee extends Component {
 
   handleOnChange = (e) => {
     const { data, error_generate_credentials } = this.state;
-    const { firstname, lastname, document_number, code } = data;
+    const { first_name, last_name, document_number, code } = data;
 
-    if(error_generate_credentials && firstname && lastname && document_number && code) {
+    if(error_generate_credentials && first_name && last_name && document_number && code) {
       this.setState({
         error_generate_credentials: false,
       })
@@ -122,24 +122,24 @@ class FormEmployee extends Component {
 
   generateCredentials = () => {
     const { data } = this.state;
-    const { firstname, lastname, document_number, code } = data;
+    const { first_name, last_name, document_number, code } = data;
     let first_firstname, second_firstname, first_lastname, second_lastname;
 
-    if(!firstname || !lastname || !document_number || !code) {
+    if(!first_name || !last_name || !document_number || !code) {
       this.setState({
         error_generate_credentials: true,
       })
       return null;
     }
     
-    first_firstname = firstname.trim().split(" ")[0];
-    second_firstname = firstname.trim().split(" ")[1];
+    first_firstname = first_name.trim().split(" ")[0];
+    second_firstname = first_name.trim().split(" ")[1];
    
-    first_lastname = lastname.trim().split(" ")[0];
-    second_lastname = lastname.trim().split(" ")[1];
+    first_lastname = last_name.trim().split(" ")[0];
+    second_lastname = last_name.trim().split(" ")[1];
     
     // Create username
-    let username = firstname.substring(0, 2) + first_lastname.substring(0, 2);
+    let username = first_name.substring(0, 2) + first_lastname.substring(0, 2);
     if (second_lastname) {
       username += second_lastname.substring(0, 2);
     } 
@@ -235,14 +235,14 @@ class FormEmployee extends Component {
 
                         <FormGroup>
                           <Label>Nombre</Label>
-                          <Field className="form-control" name="firstname" value={data.firstname} onChange={this.handleOnChange} />
-                          {errors.firstname && touched.firstname && <div className="invalid-feedback d-block">{errors.firstname}</div>}
+                          <Field className="form-control" name="first_name" value={data.first_name} onChange={this.handleOnChange} />
+                          {errors.first_name && touched.first_name && <div className="invalid-feedback d-block">{errors.first_name}</div>}
                         </FormGroup>
 
                         <FormGroup>
                           <Label>Apellidos</Label>
-                          <Field className="form-control" name="lastname" value={data.lastname} onChange={this.handleOnChange} />
-                          {errors.lastname && touched.lastname && <div className="invalid-feedback d-block">{errors.lastname}</div>}
+                          <Field className="form-control" name="last_name" value={data.last_name} onChange={this.handleOnChange} />
+                          {errors.last_name && touched.last_name && <div className="invalid-feedback d-block">{errors.last_name}</div>}
                         </FormGroup>
 
                         <FormGroup>

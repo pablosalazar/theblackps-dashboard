@@ -19,7 +19,7 @@ class ListPageHeading extends Component {
     super();
     this.state = {
       dropdownSplitOpen: false,
-      displayOptionsIsOpen: false
+      displayOptionsIsOpen: false,
     };
   }
 
@@ -43,6 +43,7 @@ class ListPageHeading extends Component {
       toggleModal,
       heading,
       url,
+      search
     } = this.props;
 
     const { displayOptionsIsOpen, dropdownSplitOpen } = this.state;
@@ -91,7 +92,8 @@ class ListPageHeading extends Component {
                     name="keyword"
                     id="search"
                     placeholder={"buscar...."}
-                    onKeyPress={e => onSearchKey(e)}
+                    value={search}
+                    onChange={e => onSearchKey(e)}
                   />
                 </div>
               </div>
