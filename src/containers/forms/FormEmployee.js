@@ -226,7 +226,7 @@ class FormEmployee extends Component {
                   <Form className="av-tooltip tooltip-label-right" autoComplete="off">
                     <Row>
                       <Colxx sm={6}>
-                        <h6 className="mb-4">Datos personales</h6>
+                        <h6 className="mb-4 text-primary">Datos personales</h6>
                         <FormGroup>
                           <Label>Código</Label>
                           <Field className="form-control" name="code" value={data.code} onChange={this.handleOnChange}/>
@@ -275,7 +275,7 @@ class FormEmployee extends Component {
                         </FormGroup>
                       </Colxx>
                       <Colxx sm={6}>
-                        <h6 className="mb-4">Datos de la cuenta</h6>
+                        <h6 className="mb-4 text-primary">Datos de la cuenta</h6>
                         <FormGroup>
                           <Label>Usuario</Label>
                           <Field className="form-control" name="username" value={data.username} onChange={this.handleOnChange} />

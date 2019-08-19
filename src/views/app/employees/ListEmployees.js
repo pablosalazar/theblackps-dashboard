@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
-import { Row, Alert } from "reactstrap";
+import { Row, Card, CardBody, CardTitle, Table, Alert } from "reactstrap";
 import { Colxx } from "../../../components/common/CustomBootstrap";
-
+import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { servicePath } from "../../../constants/defaultValues";
 
@@ -22,14 +22,14 @@ class ListEmployees extends Component {
 
       selectedPageSize: 10,
       orderOptions: [
+        { column: "id", label: "id" },
         { column: "full_name", label: "Nombre" },
         { column: "code", label: "Código" },
+        { column: "document_number", label: "Númerco de documento" },
         { column: "role", label: "Rol" },
-        { column: "username", label: "Usuario" },
-        { column: "email", label: 'Email'}
       ],
-      pageSizes: [10, 20, 30, 50, 100],
-      selectedOrderOption: { column: "first_name", label: "Nombre" },
+      pageSizes: [10, 20, 30, 50],
+      selectedOrderOption: { column: "id", label: "ID" },
       currentPage: 1,
       totalItemCount: 0,
       totalPage: 1,
@@ -76,7 +76,8 @@ class ListEmployees extends Component {
   onSearchKey = e => {
     this.setState(
       {
-        search: e.target.value.toLowerCase()
+        search: e.target.value.toLowerCase(),
+        currentPage: 1
       },
       () => this.dataListRender()
     );
@@ -170,15 +171,52 @@ class ListEmployees extends Component {
               <Alert
                 color="dark"
               >
-                No se encontrarón resultados
-              </Alert>
-            </Colxx>
-            : items.map(item => (
-                <DataListView 
-                  key={item.id}
-                  item={item}
-                />
-            ))}{" "}
+                  No se encontrarón resultados
+                </Alert>
+              </Colxx>
+            : 
+              <Colxx xxs="12" className="mb-3">
+                <Card className="mb-4">
+                  <CardBody>
+                    <CardTitle>
+                      Empleados ({totalItemCount})
+                    </CardTitle>
+                    <Table responsive>
+                      <thead className="text-primary">
+                        <tr>
+                          <th>#</th>
+                          <th>Nombre completo</th>
+                          <th>Código de empleado</th>
+                          <th>Número de documento</th>
+                          <th>Cargo</th>
+                          <th className="text-center">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {items.map(item => (
+                          <tr>
+                            <th scope="row">{item.id}</th>
+                            <td>
+                            <NavLink to={`/empleados/detalle/${item.id}`}>
+                              {item.first_name} {item.last_name}
+                            </NavLink>
+                            </td>
+                            <td>{item.code}</td>
+                            <td>{item.document_number}</td>
+                            <td>{item.role}</td>
+                            <td className="text-center">
+                              <NavLink to={`/empleados/detalle/${item.id}`} className="text-center" tooltip="jajajaj">
+                                <i className="glyph-icon simple-icon-eye"></i>
+                              </NavLink>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </CardBody>
+                </Card>
+              </Colxx>
+            }{" "}
             <Pagination
               currentPage={this.state.currentPage}
               totalPage={this.state.totalPage}

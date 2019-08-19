@@ -1,2 +1,3 @@
-validar que tipo de documento sea numerico
-poner un mensaje cuando las secciones de listar elementos cuando la lista es 0
+validar que tipo de documento sea numerico esto tiene un error
+agregar direccion y activo a empleados
+agregar imagen a activo
