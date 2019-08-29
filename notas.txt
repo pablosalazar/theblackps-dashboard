@@ -1,3 +1,4 @@
 validar que tipo de documento sea numerico esto tiene un error
 agregar direccion y activo a empleados
-agregar imagen a activo
+agregar imagen a empleados
+validar error de conexion en login

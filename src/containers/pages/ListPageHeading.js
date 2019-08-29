@@ -94,6 +94,7 @@ class ListPageHeading extends Component {
                     placeholder={"buscar...."}
                     value={search}
                     onChange={e => onSearchKey(e)}
+                    autoComplete="off"
                   />
                 </div>
               </div>

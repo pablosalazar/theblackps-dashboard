@@ -2,7 +2,9 @@ import React, { Component, Fragment } from "react";
 import { Row, Alert } from "reactstrap";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import Breadcrumb from "../../../containers/navs/Breadcrumb";
-import axios from "axios";
+import { getEmployee } from "../../../api/employeeApi";
+
+
 
 import FormEmployee from '../../../containers/forms/FormEmployee';
 
@@ -18,19 +20,22 @@ class EditEmployee extends Component {
   
   componentDidMount() {
     const employeeId = this.props.match.params.employeeId;
-    axios.get('http://localhost/theblackps/public/api/employees/' + employeeId)
-      .then(response => {
-        this.setState({
-          employee: response.data,
-          isLoading: false,
-        })
+    this.getEmployee(employeeId);
+  }
+
+  getEmployee = async (id) => {
+    try {
+      const response = await getEmployee(id);
+      this.setState({
+        employee: response,
+        isLoading: false,
       })
-      .catch(error => {
-        this.setState({
-          error: error.response ? error.response.data.error : String(error),
-          isLoading: false,
-        })
-      });
+    } catch (error) {
+      this.setState({
+        error,
+        isLoading: false
+      })
+    }
   }
 
   render() {
@@ -57,7 +62,6 @@ class EditEmployee extends Component {
               :
               <FormEmployee employee={this.state.employee} />
             }
-            
           </Colxx>    
         </Row>
         

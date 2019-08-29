@@ -2,15 +2,12 @@ import React, { Component, Fragment } from "react";
 import { Row, Card, CardBody, CardTitle, Table, Alert } from "reactstrap";
 import { Colxx } from "../../../components/common/CustomBootstrap";
 import { NavLink } from "react-router-dom";
-import axios from "axios";
-import { servicePath } from "../../../constants/defaultValues";
+import { getEmployees } from "../../../api/employeeApi";
 
 import DataListView from "../../../containers/pages/DataListView";
 import Pagination from "../../../containers/pages/Pagination";
 import ListPageHeading from "../../../containers/pages/ListPageHeading";
 
-
-const apiUrl = servicePath + "employees";
 class ListEmployees extends Component {
 
   constructor(props) {
@@ -41,36 +38,28 @@ class ListEmployees extends Component {
     this.dataListRender();
   }
 
-  dataListRender() {
+  async dataListRender() {
     const {
       selectedPageSize,
       currentPage,
       selectedOrderOption,
       search
     } = this.state;
-    axios
-      .get(
-        `${apiUrl}?pageSize=${selectedPageSize}&page=${currentPage}&orderBy=${
-          selectedOrderOption.column
-        }&search=${search}`
-      )
-      .then(response => {
-        return response.data;
+
+    try {
+      const response = await getEmployees(selectedPageSize, currentPage, selectedOrderOption.column, search);
+      this.setState({
+            totalPage: response.last_page,
+            items: response.data,
+            totalItemCount: response.total,
+            isLoading: false,
+          });
+    } catch (error) {
+      this.setState({
+        error,
+        isLoading: false,
       })
-      .then(response => {
-        this.setState({
-          totalPage: response.last_page,
-          items: response.data,
-          totalItemCount: response.total,
-          isLoading: false,
-        });
-      })
-      .catch((error) => {
-        this.setState({
-          error: error.response ? error.response.data.error : String(error),
-          isLoading: false,
-        })
-      });
+    }
   }
 
   onSearchKey = e => {
@@ -181,7 +170,7 @@ class ListEmployees extends Component {
                     <CardTitle>
                       Empleados ({totalItemCount})
                     </CardTitle>
-                    <Table responsive>
+                    <Table responsive className="table table-hover">
                       <thead className="text-primary">
                         <tr>
                           <th>#</th>
@@ -193,8 +182,8 @@ class ListEmployees extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {items.map(item => (
-                          <tr>
+                        {items.map( (item, index) => (
+                          <tr key={index}>
                             <th scope="row">{item.id}</th>
                             <td>
                             <NavLink to={`/empleados/detalle/${item.id}`}>

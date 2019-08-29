@@ -1,7 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Redirect, NavLink, Link } from 'react-router-dom';
-import axios from "axios";
+import Switch from "rc-switch";
+import "rc-switch/assets/index.css";
+
+import avatar from '../../assets/avatar.png';
+
+import { createEmployee, updateEmployee } from '../../api/employeeApi';
 
 import {
   Alert,
@@ -18,27 +23,28 @@ class FormEmployee extends Component {
   constructor(props) {
     
     super(props);
-    let data;
+    let data = {
+      image: '',
+      code: '',
+      first_name: '',
+      last_name: '',
+      document_type: '',
+      document_number: '',
+      email: '',
+      phone: '',
+      username: '',
+      password: '',
+      role: '',
+      active: true
+    }
+
     if (props.employee) {
       data = props.employee;
-    }
-    else {
-      data = {
-        code: '',
-        first_name: '',
-        last_name: '',
-        document_type: '',
-        document_number: '',
-        email: '',
-        phone: '',
-        username: '',
-        password: '',
-        role: '',
-      }
     }
     
     this.state = {
       data,
+      imageToShow: avatar,
       loading: false,
       error: null,
       error_generate_credentials: false,
@@ -47,7 +53,7 @@ class FormEmployee extends Component {
     }
   }
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     const { data, action } = this.state;
 
     this.setState({
@@ -55,31 +61,21 @@ class FormEmployee extends Component {
     })
 
     if (action === 'create') {
-      axios.post('http://localhost/theblackps/public/api/employees', data)
-      .then((response) => {
+      try {
+        await createEmployee(data);
         this.setState({loading: false, redirect:true});
-      })
-      .catch((error) => {
-        this.handleError(error);
-      });
+      } catch (error) {
+        this.setState({ error, loading: false });
+      }
 
     } else if (action === 'edit') {
-      axios.put('http://localhost/theblackps/public/api/employees/' + data.id, data)
-      .then((response) => {
+      try {
+        await updateEmployee(data.id, data);
         this.setState({loading: false, redirect:true});
-      })
-      .catch((error) => {
-        this.handleError(error);
-      });
+      } catch (error) {
+        this.setState({ error, loading: false });
+      }
     }
-  }
-
-  handleError = (error) => {
-    this.setState({
-      error: error.response ? error.response.data.error : String(error),
-      loading: false,
-    });
-    window.scrollTo(100, 0);
   }
 
   validate = () => {
@@ -180,9 +176,7 @@ class FormEmployee extends Component {
         <ul>
           {messages.map((message, index) => {
             return <li key={index}>{message[0]}</li>
-          })
-
-          }
+          })}
         </ul>
       </Fragment>
     )
@@ -192,13 +186,39 @@ class FormEmployee extends Component {
     this.setState({ error: null });
   }
 
-  routeChange = () => {
-    let path = `newPath`;
-    this.props.history.push(path);
+
+  handleFileChange = (e) => {
+    
+    const { data } = this.state;
+    const value = e.target.files[0] ? e.target.files[0] : ''
+
+    this.setState({
+      data: {
+        ...data,
+        [e.target.name]: value,
+      },
+      imageToShow: value ? URL.createObjectURL(value) : avatar
+    })
+  }
+
+  openFileWindow = () => {
+    document.getElementById('image-file').click();
+  }
+
+  clearImage = () => {
+    const { data } = this.state;
+    this.setState({
+      data: {
+        ...data,
+        image: '',
+      },
+      imageToShow: avatar
+    })
   }
 
   render() {
     const { data, loading, error, error_generate_credentials, redirect, action } = this.state;
+    console.log(this.state);
     if (redirect) {
       return <Redirect to='/empleados/lista'/>;
     }
@@ -225,28 +245,31 @@ class FormEmployee extends Component {
                 {({ errors, touched }) => (
                   <Form className="av-tooltip tooltip-label-right" autoComplete="off">
                     <Row>
-                      <Colxx sm={6}>
+                      <Colxx sm={12}>
+                        <p className="text-right">Los campos marcados con (<span className="req">*</span>) son obligatorios</p>
+                      </Colxx>             
+                      <Colxx sm={4}>
                         <h6 className="mb-4 text-primary">Datos personales</h6>
                         <FormGroup>
-                          <Label>Código</Label>
+                          <Label>Código <span className="req">*</span></Label>
                           <Field className="form-control" name="code" value={data.code} onChange={this.handleOnChange}/>
                           {errors.code && touched.code && <div className="invalid-feedback d-block">{errors.code}</div>}
                         </FormGroup>
 
                         <FormGroup>
-                          <Label>Nombre</Label>
+                          <Label>Nombre <span className="req">*</span></Label>
                           <Field className="form-control" name="first_name" value={data.first_name} onChange={this.handleOnChange} />
                           {errors.first_name && touched.first_name && <div className="invalid-feedback d-block">{errors.first_name}</div>}
                         </FormGroup>
 
                         <FormGroup>
-                          <Label>Apellidos</Label>
+                          <Label>Apellidos <span className="req">*</span></Label>
                           <Field className="form-control" name="last_name" value={data.last_name} onChange={this.handleOnChange} />
                           {errors.last_name && touched.last_name && <div className="invalid-feedback d-block">{errors.last_name}</div>}
                         </FormGroup>
 
                         <FormGroup>
-                          <Label>Tipo de documento</Label>
+                          <Label>Tipo de documento <span className="req">*</span></Label>
                           <Field className="form-control" component="select" name="document_type" value={data.document_type} onChange={this.handleOnChange}>
                             <option value="">-- Seleccione una opción --</option>
                             <option value="CC">CC</option>
@@ -257,13 +280,13 @@ class FormEmployee extends Component {
                         </FormGroup>
 
                         <FormGroup>
-                          <Label>Número de documento</Label>
+                          <Label>Número de documento <span className="req">*</span></Label>
                           <Field className="form-control" name="document_number" value={data.document_number} onChange={this.handleOnChange} />
                           {errors.document_number && touched.document_number && <div className="invalid-feedback d-block">{errors.document_number}</div>}
                         </FormGroup>
                         
                         <FormGroup>
-                            <Label>Email</Label>
+                            <Label>Email <span className="req">*</span></Label>
                             <Field className="form-control" name="email" value={data.email} onChange={this.handleOnChange} />
                             {errors.email && touched.email && <div className="invalid-feedback d-block">{errors.email}</div>}
                         </FormGroup>
@@ -273,31 +296,25 @@ class FormEmployee extends Component {
                           <Field className="form-control" name="phone" value={data.phone} onChange={this.handleOnChange} />
                           {errors.phone && touched.phone && <div className="invalid-feedback d-block">{errors.phone}</div>}
                         </FormGroup>
+                        <FormGroup>
+                          <Label>Dirección</Label>
+                          <Field className="form-control" name="address" value={data.address} onChange={this.handleOnChange} />
+                          {errors.address && touched.address && <div className="invalid-feedback d-block">{errors.address}</div>}
+                        </FormGroup>
                       </Colxx>
-                      <Colxx sm={6}>
+                      <Colxx sm={4}>
                         <h6 className="mb-4 text-primary">Datos de la cuenta</h6>
                         <FormGroup>
-                          <Label>Usuario</Label>
+                          <Label>Usuario <span className="req">*</span></Label>
                           <Field className="form-control" name="username" value={data.username} onChange={this.handleOnChange} />
                           {errors.username && touched.username && <div className="invalid-feedback d-block">{errors.username}</div>}
                         </FormGroup>
 
                         <FormGroup>
-                          <Label>Contraseña</Label>
+                          <Label>Contraseña <span className="req">*</span></Label>
                           <Field className="form-control" name="password" value={data.password} onChange={this.handleOnChange} />
                           {errors.password && touched.password && <div className="invalid-feedback d-block">{errors.password}</div>}
                         </FormGroup>
-
-                        <FormGroup>
-                          <Label>Rol</Label>
-                          <Field className="form-control" component="select" name="role" value={data.role} onChange={this.handleOnChange}>
-                            <option value="">-- Seleccione una opción --</option>
-                            <option value="EMPLEADO">Empleado</option>
-                            <option value="ADMIN">Admin</option>
-                          </Field>
-                          {errors.role && touched.role && <div className="invalid-feedback d-block">{errors.role}</div>}
-                        </FormGroup>
-
                         {error_generate_credentials &&
                           <div className="alert alert-info">
                             Para generar el usuario y la contraseña primero debes ingresar el código, nombre, apellidos y número de documento del empleado.
@@ -306,7 +323,44 @@ class FormEmployee extends Component {
                         <div className="text-right">
                           <Button outline color="dark" onClick={this.generateCredentials} disabled={loading}>Generar credenciales</Button>
                         </div>
+                        <hr/>
+                        <FormGroup>
+                          <Label>Rol <span className="req">*</span></Label>
+                          <Field className="form-control" component="select" name="role" value={data.role} onChange={this.handleOnChange}>
+                            <option value="">-- Seleccione una opción --</option>
+                            <option value="EMPLEADO">Empleado</option>
+                            <option value="ADMIN">Admin</option>
+                          </Field>
+                          {errors.role && touched.role && <div className="invalid-feedback d-block">{errors.role}</div>}
+                        </FormGroup>
+                        <br/>
+                        <FormGroup>
+                          <label htmlFor="switch-active">Estado del empleado</label>
+                          <Switch
+                            className="custom-switch custom-switch-primary-inverse"
+                            checked={Boolean(data.active)}
+                            onChange={() => {
+                              this.setState({ data: { ...data, active: !data.active} });
+                            }}
+                          />
+                        </FormGroup>
+                        
                       </Colxx>
+
+                      <Colxx sm={4}>
+                        <h6 className="mb-5 text-primary">Imagen</h6>
+                        <p>Elegir imagen</p>
+                        <div className="">
+                          <div className="avatar mr-4">
+                            <figure className="image-avatar" style={{backgroundImage: `url(${this.state.imageToShow})`}}></figure>
+                          </div>
+                          <button type="button" className="btn btn-sm btn-warning mr-2" onClick={this.openFileWindow}>Cambiar</button>
+                          <button type="button" className="btn btn-sm btn-danger" onClick={this.clearImage}>Quitar</button>
+                          <input type="file" id="image-file" className="form-control d-none" name="image" onChange={this.handleFileChange}/>
+                          
+                        </div>
+                      </Colxx>        
+                      
                     </Row>
                     <div className="mt-5 text-right">
                       <NavLink to="/empleados/lista" className="btn btn-outline-dark mr-3">Salir </NavLink>

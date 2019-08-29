@@ -17,16 +17,16 @@ const AuthRoute = ({ component: Component, authUser, ...rest }) => (
   <Route
     {...rest}
     render={props =>
-      // authUser ? (
+      authUser ? (
         <Component {...props} />
-      // ) : (
-      //   <Redirect
-      //     to={{
-      //       pathname: "/auth/login",
-      //       state: { from: props.location }
-      //     }}
-      //   />
-      // )
+      ) : (
+        <Redirect
+          to={{
+            pathname: "/auth/login",
+            state: { from: props.location }
+          }}
+        />
+      )
     }
   />
 );

@@ -5,25 +5,44 @@ import { connect } from "react-redux";
 
 import { loginUser } from "../../redux/actions";
 import { Colxx } from "../../components/common/CustomBootstrap";
+
 class Login extends Component {
   
   constructor(props) {
     super(props);
     this.state = {
-      email: "demo@theblackps.com",
-      password: "123456"
+      login: "wcardenas",
+      password: "secret",
+      error: null
     };
   }
 
-  onUserLogin() {
-    if (this.state.email !== "" && this.state.password !== "") {
-      this.props.loginUser(this.state, this.props.history);
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
+  }
+
+  onUserLogin = async () => {
+    this.setState({ isLoading: true, error: null});
+    
+    if (this.state.login !== "" && this.state.password !== "") {
+      
+      
+        const user = await this.props.loginUser(this.state, this.props.history);
+        
+   
+    } else {
+      this.setState({error: "Ingresa los campos para iniciar sesion"});
     }
   }
 
   render() {
+    const { isLoading, error } = this.state;
+    
     return (
       <Row className="h-100">
+        
         <Colxx xxs="12" md="10" className="mx-auto my-auto">
           <Card className="auth-card">
             <div className="position-relative image-side ">
@@ -37,17 +56,27 @@ class Login extends Component {
               <NavLink to={`/`} className="white">
                 <span className="logo-single" />
               </NavLink>
+              {error && <div className="alert alert-warning">
+                {error}
+              </div>}
+
+              {this.props.error && <div className="alert alert-danger">
+                {this.props.error}
+              </div>}
+
+              {this.props.loading && <div className="loading" />}
               <CardTitle className="mb-4">
                 Iniciar sesión
               </CardTitle>
               <Form>
+              
                 <Label className="form-group has-float-label mb-4">
-                  <Input type="email" defaultValue={this.state.email} />
-                  <span>Email</span>
+                  <Input type="text" name="login" value={this.state.login} onChange={this.handleChange} />
+                  <span>Ingresa tu usuario o correo electrónico</span>
                 </Label>
                 <Label className="form-group has-float-label mb-4">
-                  <Input type="password" />
-                  <span>Password</span>
+                  <Input type="password" name="password" autoComplete="off" value={this.state.password} onChange={this.handleChange}/>
+                  <span>Contraseña</span>
                 </Label>
                 <div className="d-flex justify-content-between align-items-center">
                   <NavLink to={`/forgot-password`}>
@@ -58,9 +87,11 @@ class Login extends Component {
                     className="btn-shadow"
                     size="lg"
                     onClick={() => this.onUserLogin()}
+                    disabled={this.props.loading}
                   >
                     ENTRAR
                   </Button>
+                  
                 </div>
               </Form>
             </div>
@@ -72,8 +103,8 @@ class Login extends Component {
 }
 
 const mapStateToProps = ({ authUser }) => {
-  const { user, loading } = authUser;
-  return { user, loading };
+  const { user, loading, error } = authUser;
+  return { user, loading, error };
 };
 
 export default connect(mapStateToProps, { loginUser })(Login);

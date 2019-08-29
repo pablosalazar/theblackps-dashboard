@@ -25,7 +25,8 @@ class Topnav extends Component {
 
     this.state = {
       isInFullScreen: false,
-      searchKeyword: ""
+      searchKeyword: "",
+      user: JSON.parse(localStorage.getItem('user')),
     };
   }
 
@@ -140,7 +141,7 @@ class Topnav extends Component {
           <div className="user d-inline-block">
             <UncontrolledDropdown className="dropdown-menu-right">
               <DropdownToggle className="p-0" color="empty">
-                <span className="name mr-1">Camila Sanchez</span>
+                <span className="name mr-1">{this.state.user.full_name}</span>
                 <span>
                   <img alt="Profile" src="/assets/img/profile-pic-l.jpg" />
                 </span>
