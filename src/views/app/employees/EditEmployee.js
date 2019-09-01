@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from "react";
 import { Row, Alert } from "reactstrap";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
+import { Redirect, NavLink } from 'react-router-dom';
 import Breadcrumb from "../../../containers/navs/Breadcrumb";
-import { getEmployee } from "../../../api/employeeApi";
+import DeleteEmployeeModal from "../../../containers/modals/DeleteEmployeeModal";
 
-
-
+import { getEmployee, deleteEmployee } from "../../../api/employeeApi";
 import FormEmployee from '../../../containers/forms/FormEmployee';
+import { async } from "q";
 
 class EditEmployee extends Component {
   constructor(props) {
@@ -15,6 +16,8 @@ class EditEmployee extends Component {
       employee: {},
       isLoading: true,
       error: null,
+      modalOpen: false,
+      redirect: false,
     }
   }
   
@@ -38,8 +41,31 @@ class EditEmployee extends Component {
     }
   }
 
+  deleteEmployee = async (id) => {
+    try {
+      const response = await deleteEmployee(id);
+      this.setState({
+        modalOpen: false,
+        redirect: true,
+      })
+    } catch (error) {
+      this.setState({
+        error,
+      })
+    }
+  }
+
+  toggleModal = () => {
+    this.setState({
+      modalOpen: !this.state.modalOpen
+    });
+  }
+
   render() {
-    const { isLoading, error } = this.state;
+    const { employee, isLoading, error, modalOpen, redirect } = this.state;
+    if (redirect) {
+      return <Redirect to='/empleados/lista'/>;
+    }
     return isLoading ? (
       <div className="loading" />
     ) : (
@@ -47,10 +73,13 @@ class EditEmployee extends Component {
         <Row>
           <Colxx xxs="12">
             <Breadcrumb heading="Detalle del empleado" match={this.props.match} />
+            <div className="text-zero top-right-button-container">
+              <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Borrar empleado </button>
+              <NavLink to="/empleados/lista" className="btn btn-sm btn-outline-dark mr-3">Salir </NavLink>
+            </div>
             <Separator className="mb-5" />
           </Colxx>
         </Row>
-        
         <Row>
           <Colxx xs="12" md="12" className="mb-3">
             {error? 
@@ -60,12 +89,19 @@ class EditEmployee extends Component {
                 {error}
               </Alert>
               :
-              <FormEmployee employee={this.state.employee} />
+              <FormEmployee employee={employee} />
             }
           </Colxx>    
         </Row>
-        
+        <DeleteEmployeeModal 
+          employee={employee} 
+          toggleModal={this.toggleModal} 
+          modalOpen={modalOpen}
+          handleSubmit={this.deleteEmployee}
+        />
       </Fragment>
+
+      
     );
   }
 }

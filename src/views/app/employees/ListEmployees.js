@@ -7,7 +7,7 @@ import { getEmployees } from "../../../api/employeeApi";
 import DataListView from "../../../containers/pages/DataListView";
 import Pagination from "../../../containers/pages/Pagination";
 import ListPageHeading from "../../../containers/pages/ListPageHeading";
-
+import avatar from '../../../assets/avatar.png'
 class ListEmployees extends Component {
 
   constructor(props) {
@@ -107,15 +107,11 @@ class ListEmployees extends Component {
       error,
       currentPage,
       items,
-      displayMode,
       selectedPageSize,
       totalItemCount,
       selectedOrderOption,
-      selectedItems,
       orderOptions,
       pageSizes,
-      modalOpen,
-      categories,
       search
     } = this.state;
     const { match } = this.props;
@@ -173,18 +169,22 @@ class ListEmployees extends Component {
                     <Table responsive className="table table-hover">
                       <thead className="text-primary">
                         <tr>
-                          <th>#</th>
+                          <th>Foto</th>
                           <th>Nombre completo</th>
                           <th>Código de empleado</th>
                           <th>Número de documento</th>
                           <th>Cargo</th>
-                          <th className="text-center">Acciones</th>
+                          <th className="text-center">Acciones</th>                          
                         </tr>
                       </thead>
                       <tbody>
                         {items.map( (item, index) => (
                           <tr key={index}>
-                            <th scope="row">{item.id}</th>
+                            <td>
+                              <div className="avatar-table">
+                              <figure className="image-avatar" style={{backgroundImage: `url(${avatar})`}}></figure>
+                              </div>
+                            </td>
                             <td>
                             <NavLink to={`/empleados/detalle/${item.id}`}>
                               {item.first_name} {item.last_name}
@@ -193,8 +193,8 @@ class ListEmployees extends Component {
                             <td>{item.code}</td>
                             <td>{item.document_number}</td>
                             <td>{item.role}</td>
-                            <td className="text-center">
-                              <NavLink to={`/empleados/detalle/${item.id}`} className="text-center" tooltip="jajajaj">
+                            <td className="td-actions text-center">
+                              <NavLink to={`/empleados/detalle/${item.id}`} className="text-center" title="Eliminar empleado">
                                 <i className="glyph-icon simple-icon-eye"></i>
                               </NavLink>
                             </td>

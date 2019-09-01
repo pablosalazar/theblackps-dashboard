@@ -51,3 +51,12 @@ export async function updateEmployee(id, employee) {
     throw error.response.data.error;
   }
 }
+
+export async function deleteEmployee(id) {
+  try {
+    const data  = await axiosInstance.delete(`/employees/${id}`);
+    return data.data;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+}

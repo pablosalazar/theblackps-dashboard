@@ -32,6 +32,7 @@ class FormEmployee extends Component {
       document_number: '',
       email: '',
       phone: '',
+      address: '',
       username: '',
       password: '',
       role: '',
@@ -91,8 +92,8 @@ class FormEmployee extends Component {
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
       errors.email = 'Escribe una dirección de correo electrónico valida';
     }
-
-    if (values.document_number && !Number.isInteger(parseInt(values.document_number, 10))) {
+    
+    if (!/^[0-9]+$/i.test(values.document_number)) {
       errors.document_number = "Ingresa solo números";
     }
     return errors;
@@ -188,10 +189,9 @@ class FormEmployee extends Component {
 
 
   handleFileChange = (e) => {
-    
     const { data } = this.state;
-    const value = e.target.files[0] ? e.target.files[0] : ''
-
+    const value = e.target.files[0];
+    
     this.setState({
       data: {
         ...data,
@@ -218,12 +218,11 @@ class FormEmployee extends Component {
 
   render() {
     const { data, loading, error, error_generate_credentials, redirect, action } = this.state;
-    console.log(this.state);
+    
     if (redirect) {
       return <Redirect to='/empleados/lista'/>;
     }
     return (
-
       <Row className="mb-4">
         <Colxx xxs="12">
           {loading && <div className="loading" />}
@@ -350,15 +349,13 @@ class FormEmployee extends Component {
                       <Colxx sm={4}>
                         <h6 className="mb-5 text-primary">Imagen</h6>
                         <p>Elegir imagen</p>
-                        <div className="">
-                          <div className="avatar mr-4">
-                            <figure className="image-avatar" style={{backgroundImage: `url(${this.state.imageToShow})`}}></figure>
-                          </div>
-                          <button type="button" className="btn btn-sm btn-warning mr-2" onClick={this.openFileWindow}>Cambiar</button>
-                          <button type="button" className="btn btn-sm btn-danger" onClick={this.clearImage}>Quitar</button>
-                          <input type="file" id="image-file" className="form-control d-none" name="image" onChange={this.handleFileChange}/>
-                          
+                       
+                        <div className="avatar mr-4">
+                          <figure className="image-avatar" style={{backgroundImage: `url(${this.state.imageToShow})`}}></figure>
                         </div>
+                        <button type="button" className="btn btn-sm btn-warning mr-2" onClick={this.openFileWindow}>Cambiar</button>
+                        <button type="button" className="btn btn-sm btn-outline-dark" onClick={this.clearImage}>Quitar</button>
+                        <input type="file" id="image-file" className="form-control d-none" name="image" onChange={this.handleFileChange}/>
                       </Colxx>        
                       
                     </Row>
