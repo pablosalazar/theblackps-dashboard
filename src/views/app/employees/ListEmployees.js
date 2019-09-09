@@ -3,11 +3,9 @@ import { Row, Card, CardBody, CardTitle, Table, Alert } from "reactstrap";
 import { Colxx } from "../../../components/common/CustomBootstrap";
 import { NavLink } from "react-router-dom";
 import { getEmployees } from "../../../api/employeeApi";
-
-import DataListView from "../../../containers/pages/DataListView";
+import { RESOURCE_URL } from "../../../constants/defaultValues";
 import Pagination from "../../../containers/pages/Pagination";
 import ListPageHeading from "../../../containers/pages/ListPageHeading";
-import avatar from '../../../assets/avatar.png'
 class ListEmployees extends Component {
 
   constructor(props) {
@@ -182,7 +180,7 @@ class ListEmployees extends Component {
                           <tr key={index}>
                             <td>
                               <div className="avatar-table">
-                              <figure className="image-avatar" style={{backgroundImage: `url(${avatar})`}}></figure>
+                              <figure className="image-avatar" style={{backgroundImage: `url(${RESOURCE_URL}/img/employees/${item.image})`}}></figure>
                               </div>
                             </td>
                             <td>

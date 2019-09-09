@@ -12,7 +12,6 @@ export const loginUser = (user, history) => {
   }
 }
 
-
 export const loginUserSuccess = (user) => ({
   type: LOGIN_USER_SUCCESS,
   payload: user

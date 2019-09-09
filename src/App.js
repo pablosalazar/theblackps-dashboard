@@ -4,7 +4,7 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 
 import main from "./views";
@@ -47,7 +47,7 @@ class App extends Component {
               <Route path="/auth" component={Auth} />
               <Route path="/error" exact component={error} />
               <Route path="/" exact component={main} />
-              {/* <Redirect to="/error" /> */}
+              <Redirect to="/error" />
             </Switch>
           </Router>
         </React.Fragment>  

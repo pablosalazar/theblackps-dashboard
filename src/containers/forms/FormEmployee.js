@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { Redirect, NavLink, Link } from 'react-router-dom';
+import Resizer from 'react-image-file-resizer';
 import Switch from "rc-switch";
+import { RESOURCE_URL } from "../../constants/defaultValues";
 import "rc-switch/assets/index.css";
-
+import { scrollToTop } from '../../helpers/utils';
 import avatar from '../../assets/avatar.png';
 
 import { createEmployee, updateEmployee } from '../../api/employeeApi';
@@ -23,40 +25,44 @@ class FormEmployee extends Component {
   constructor(props) {
     
     super(props);
+    // let data = {
+    // };
     let data = {
-      image: '',
-      code: '',
-      first_name: '',
-      last_name: '',
-      document_type: '',
-      document_number: '',
-      email: '',
+      photo: '',
+      code: '1',
+      first_name: 'juan pablo',
+      last_name: 'salazar restrepo',
+      document_type: 'CC',
+      document_number: '1061701570',
+      email: 'example@example.com',
       phone: '',
+      address: '',
       address: '',
       username: '',
       password: '',
-      role: '',
+      role: 'EMPLEADO',
       active: true
     }
-
+    
     if (props.employee) {
       data = props.employee;
     }
     
     this.state = {
       data,
-      imageToShow: avatar,
+      currentImage: props.employee ? `${RESOURCE_URL}/img/employees/${data.image}` : avatar,
+      imageToShow: props.employee ? `${RESOURCE_URL}/img/employees/${data.image}` : avatar,
       loading: false,
       error: null,
       error_generate_credentials: false,
       redirect: false,
       action: props.employee? 'edit': 'create',
+      rotate: 90,
     }
   }
 
   handleSubmit = async () => {
     const { data, action } = this.state;
-
     this.setState({
       loading: true,
     })
@@ -67,6 +73,7 @@ class FormEmployee extends Component {
         this.setState({loading: false, redirect:true});
       } catch (error) {
         this.setState({ error, loading: false });
+        scrollToTop(500);
       }
 
     } else if (action === 'edit') {
@@ -75,16 +82,19 @@ class FormEmployee extends Component {
         this.setState({loading: false, redirect:true});
       } catch (error) {
         this.setState({ error, loading: false });
+        scrollToTop(500);
       }
     }
   }
+
+  
 
   validate = () => {
     const values = this.state.data;
     let errors = {};
     
     Object.keys(values).forEach((value) => {
-      if (values[value] === '') {
+      if (values[value] === '' && value !== 'phone' && value !== 'address' && value !== 'photo') {
         errors[value] = 'Este campo es obligatorio';
       }
     });
@@ -96,6 +106,7 @@ class FormEmployee extends Component {
     if (!/^[0-9]+$/i.test(values.document_number)) {
       errors.document_number = "Ingresa solo números";
     }
+
     return errors;
   }
 
@@ -187,18 +198,37 @@ class FormEmployee extends Component {
     this.setState({ error: null });
   }
 
-
-  handleFileChange = (e) => {
+  resizeFile = (file, rotate = 0) => {
+    if (rotate === 360 ) rotate = 0;
     const { data } = this.state;
-    const value = e.target.files[0];
-    
-    this.setState({
-      data: {
-        ...data,
-        [e.target.name]: value,
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      'jpg',
+      100,
+      rotate,
+      uri => {
+        this.setState({
+          data: {
+            ...data,
+            photo: uri,
+            
+          },
+          rotate,
+          imageToShow: URL.createObjectURL(uri)
+        })
       },
-      imageToShow: value ? URL.createObjectURL(value) : avatar
-    })
+      'blob'
+    );
+  }
+
+  handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      this.resizeFile(file);
+    }
+    
   }
 
   openFileWindow = () => {
@@ -210,15 +240,14 @@ class FormEmployee extends Component {
     this.setState({
       data: {
         ...data,
-        image: '',
+        photo: '',
       },
-      imageToShow: avatar
+      imageToShow: this.state.currentImage
     })
   }
 
   render() {
     const { data, loading, error, error_generate_credentials, redirect, action } = this.state;
-    
     if (redirect) {
       return <Redirect to='/empleados/lista'/>;
     }
@@ -349,14 +378,19 @@ class FormEmployee extends Component {
                       <Colxx sm={4}>
                         <h6 className="mb-5 text-primary">Imagen</h6>
                         <p>Elegir imagen</p>
-                       
-                        <div className="avatar mr-4">
+                        <div className="avatar mb-2 mr-4">
                           <figure className="image-avatar" style={{backgroundImage: `url(${this.state.imageToShow})`}}></figure>
                         </div>
                         <button type="button" className="btn btn-sm btn-warning mr-2" onClick={this.openFileWindow}>Cambiar</button>
-                        <button type="button" className="btn btn-sm btn-outline-dark" onClick={this.clearImage}>Quitar</button>
-                        <input type="file" id="image-file" className="form-control d-none" name="image" onChange={this.handleFileChange}/>
-                      </Colxx>        
+                        {this.state.data.photo &&
+                          <Fragment>
+                            <button type="button" className="btn btn-sm btn-outline-dark mr-2" onClick={this.clearImage}>Quitar</button>
+                            <button type="button" className="btn btn-sm btn-outline-dark" onClick={() => this.resizeFile(this.state.data.photo, this.state.rotate + 90)}><i className="iconsminds-rotation" /></button>
+                          </Fragment>                         
+                        }
+                        <input type="file" id="image-file" className="form-control d-none" name="photo" onChange={this.handleFileChange}/>
+
+                      </Colxx>
                       
                     </Row>
                     <div className="mt-5 text-right">

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BASE_URI, API_URL } from '../constants/defaultValues';
-
+import FormData from 'form-data'
 
 const axiosInstance = axios.create({
   baseURL: API_URL + BASE_URI,
@@ -35,17 +35,16 @@ export async function getEmployee(id) {
 
 export async function createEmployee(employee) {
   try {
-    const data  = await axiosInstance.post('/employees', employee);
+    const data  = await axiosInstance.post('/employees', getFormData(employee));
     return data.data;
   } catch (error) {
     throw error.response.data.error;
   }
 }
 
-
 export async function updateEmployee(id, employee) {
   try {
-    const data  = await axiosInstance.put(`/employees/${id}`, employee);
+    const data  = await axiosInstance.post(`/employees/${id}`, getFormData(employee, 'PUT'));
     return data.data;
   } catch (error) {
     throw error.response.data.error;
@@ -59,4 +58,14 @@ export async function deleteEmployee(id) {
   } catch (error) {
     throw error.response.data.error;
   }
+}
+
+function getFormData(object, method) {
+  const formData = new FormData();
+
+  Object.keys(object).forEach(key => formData.append(key, object[key]));
+  if (method === 'PUT') {
+    formData.append('_method', 'PUT');
+  }
+  return formData;
 }

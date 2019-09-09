@@ -1,4 +1,8 @@
+
+validar error de conexion en login
+BORRADO SOFT luego no permite ingresar una persona con los mismo datos
+
+DONE 
 validar que tipo de documento sea numerico esto tiene un error
 agregar direccion y activo a empleados
 agregar imagen a empleados
-validar error de conexion en login
