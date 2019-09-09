@@ -42,7 +42,7 @@ const data = [
     id: "clientes",
     icon: "iconsminds-male-female",
     label: "Clientes",
-    to: "https://gogo-react-docs.coloredstrategies.com/",
+    to: "/clientes",
   },
   {
     id: "empleados",

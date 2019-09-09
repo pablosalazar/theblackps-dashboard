@@ -10,6 +10,7 @@ import {
 import main from "./views";
 import app from "./views/app";
 import Employees from "./views/app/employees";
+import Customers from "./views/app/customers";
 import Auth from './views/auth';
 import error from "./views/error";
 
@@ -44,6 +45,7 @@ class App extends Component {
             <Switch>
               <AuthRoute path="/app" authUser={loginUser} component={app} />
               <Route path="/empleados" component={Employees} />
+              <Route path="/clientes" component={Customers} />
               <Route path="/auth" component={Auth} />
               <Route path="/error" exact component={error} />
               <Route path="/" exact component={main} />

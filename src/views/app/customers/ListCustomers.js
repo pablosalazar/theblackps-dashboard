@@ -1,12 +1,12 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment } from 'react';
 import { Row, Card, CardBody, CardTitle, Table, Alert } from "reactstrap";
 import { Colxx } from "../../../components/common/CustomBootstrap";
 import { NavLink } from "react-router-dom";
-import { getEmployees } from "../../../api/employeeApi";
-import { RESOURCE_URL } from "../../../constants/defaultValues";
+import { getCustomers } from "../../../api/customerApi";
 import Pagination from "../../../containers/pages/Pagination";
 import ListPageHeading from "../../../containers/pages/ListPageHeading";
-class ListEmployees extends Component {
+
+export default class ListCustomers extends Component {
 
   constructor(props) {
     super(props);
@@ -17,13 +17,10 @@ class ListEmployees extends Component {
 
       selectedPageSize: 10,
       orderOptions: [
-        { column: "id", label: "id" },
-        { column: "full_name", label: "Nombre" },
-        { column: "code", label: "Código" },
+        { column: "name", label: "Nombre" },
         { column: "document_number", label: "Númerco de documento" },
-        { column: "role", label: "Rol" },
       ],
-      selectedOrderOption: { column: "id", label: "ID" },
+      selectedOrderOption: { column: "name", label: "Nombre" },
       pageSizes: [10, 20, 30, 50],
       currentPage: 1,
       totalItemCount: 0,
@@ -45,7 +42,7 @@ class ListEmployees extends Component {
     } = this.state;
 
     try {
-      const response = await getEmployees(selectedPageSize, currentPage, selectedOrderOption.column, search);
+      const response = await getCustomers(selectedPageSize, currentPage, selectedOrderOption.column, search);
       this.setState({
             totalPage: response.last_page,
             items: response.data,
@@ -100,6 +97,7 @@ class ListEmployees extends Component {
   };
 
   render() {
+
     const {
       isLoading, 
       error,
@@ -127,18 +125,18 @@ class ListEmployees extends Component {
         </Colxx>
       )
     }
-    
+
     return isLoading ? (
       <div className="loading" />
     ) : (
       <Fragment>
         <div className="disable-text-selection">
           <ListPageHeading 
-            heading='Lista de empleados'
+            heading='Lista de clientes'
             match={match}
             startIndex={startIndex}
             endIndex={endIndex}
-            url='/empleados/nuevo'
+            url='/clientes/nuevo'
             totalItemCount={totalItemCount}
             selectedPageSize={selectedPageSize}
             changeOrderBy={this.changeOrderBy}
@@ -162,16 +160,14 @@ class ListEmployees extends Component {
                 <Card className="mb-4">
                   <CardBody>
                     <CardTitle>
-                      Empleados ({totalItemCount})
+                      Clientes ({totalItemCount})
                     </CardTitle>
                     <Table responsive className="table table-hover">
                       <thead className="text-primary">
                         <tr>
-                          <th>Foto</th>
                           <th>Nombre completo</th>
-                          <th>Código de empleado</th>
+                          <th>Teléfono</th>
                           <th>Número de documento</th>
-                          <th>Cargo</th>
                           <th className="text-center">Acciones</th>                          
                         </tr>
                       </thead>
@@ -179,18 +175,12 @@ class ListEmployees extends Component {
                         {items.map( (item, index) => (
                           <tr key={index}>
                             <td>
-                              <div className="avatar-table">
-                              <figure className="image-avatar" style={{backgroundImage: `url(${RESOURCE_URL}/img/employees/${item.image})`}}></figure>
-                              </div>
-                            </td>
-                            <td>
                             <NavLink to={`/empleados/detalle/${item.id}`}>
-                              {item.first_name} {item.last_name}
+                              {item.name}
                             </NavLink>
                             </td>
-                            <td>{item.code}</td>
+                            <td>{item.phone}</td>
                             <td>{item.document_number}</td>
-                            <td>{item.role}</td>
                             <td className="td-actions text-center">
                               <NavLink to={`/empleados/detalle/${item.id}`} className="text-center" title="Eliminar empleado">
                                 <i className="glyph-icon simple-icon-eye"></i>
@@ -215,5 +205,3 @@ class ListEmployees extends Component {
     );
   }
 }
-
-export default ListEmployees;
