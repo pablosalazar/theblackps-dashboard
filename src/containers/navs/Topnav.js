@@ -4,9 +4,9 @@ import {
   DropdownItem,
   DropdownToggle,
   DropdownMenu,
-  Input
 } from "reactstrap";
 
+import { RESOURCE_URL } from '../../constants/defaultValues';
 import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 
@@ -97,6 +97,7 @@ class Topnav extends Component {
 
   render() {
     const { containerClassnames, menuClickCount } = this.props;
+    const { user } = this.state;
     return (
       <nav className="navbar fixed-top">
         <div className="d-flex align-items-center navbar-left">
@@ -141,10 +142,10 @@ class Topnav extends Component {
           <div className="user d-inline-block">
             <UncontrolledDropdown className="dropdown-menu-right">
               <DropdownToggle className="p-0" color="empty">
-                <span className="name mr-1">{this.state.user.full_name}</span>
-                <span>
-                  <img alt="Profile" src="/assets/img/profile-pic-l.jpg" />
-                </span>
+                <span className="name mr-1">{user.full_name}</span>
+                <div className="user-image">
+                  <figure style={{backgroundImage: `url(${RESOURCE_URL}/img/employees/${user.image})`}} />
+                </div>
               </DropdownToggle>
               <DropdownMenu className="mt-3" right>
                 <DropdownItem>Account</DropdownItem>

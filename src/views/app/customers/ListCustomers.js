@@ -175,14 +175,14 @@ export default class ListCustomers extends Component {
                         {items.map( (item, index) => (
                           <tr key={index}>
                             <td>
-                            <NavLink to={`/empleados/detalle/${item.id}`}>
+                            <NavLink to={`/clientes/detalle/${item.id}`}>
                               {item.name}
                             </NavLink>
                             </td>
                             <td>{item.phone}</td>
                             <td>{item.document_number}</td>
                             <td className="td-actions text-center">
-                              <NavLink to={`/empleados/detalle/${item.id}`} className="text-center" title="Eliminar empleado">
+                              <NavLink to={`/clientes/detalle/${item.id}`} className="text-center">
                                 <i className="glyph-icon simple-icon-eye"></i>
                               </NavLink>
                             </td>

@@ -192,7 +192,7 @@ class ListEmployees extends Component {
                             <td>{item.document_number}</td>
                             <td>{item.role}</td>
                             <td className="td-actions text-center">
-                              <NavLink to={`/empleados/detalle/${item.id}`} className="text-center" title="Eliminar empleado">
+                              <NavLink to={`/empleados/detalle/${item.id}`} className="text-center">
                                 <i className="glyph-icon simple-icon-eye"></i>
                               </NavLink>
                             </td>

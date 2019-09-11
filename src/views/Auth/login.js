@@ -11,7 +11,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      login: "jan24",
+      login: "baca.carmen",
       password: "secret",
       error: null
     };

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { Redirect, NavLink, Link } from 'react-router-dom';
+import { Redirect, NavLink } from 'react-router-dom';
 import Resizer from 'react-image-file-resizer';
 import Switch from "rc-switch";
 import { RESOURCE_URL } from "../../constants/defaultValues";
@@ -25,24 +25,7 @@ class FormEmployee extends Component {
   constructor(props) {
     
     super(props);
-    // let data = {
-    // };
-    let data = {
-      photo: '',
-      code: '1',
-      first_name: 'juan pablo',
-      last_name: 'salazar restrepo',
-      document_type: 'CC',
-      document_number: '1061701570',
-      email: 'example@example.com',
-      phone: '',
-      address: '',
-      address: '',
-      username: '',
-      password: '',
-      role: 'EMPLEADO',
-      active: true
-    }
+    let data = {};
     
     if (props.employee) {
       data = props.employee;
