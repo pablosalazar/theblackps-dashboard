@@ -16,7 +16,7 @@ class Customers extends Component {
           <Redirect exact from={`${match.url}/`} to={`${match.url}/lista`} />
           <Route path={`${match.url}/lista`} component={ListCustomers} />
           <Route path={`${match.url}/nuevo`} component={AddCustomer} />
-          <Route path={`${match.url}/detalle/:employeeId`} component={EditCustomer} />
+          <Route path={`${match.url}/detalle/:customerId`} component={EditCustomer} />
           <Redirect to="/error" />
         </Switch>
       </AppLayout>

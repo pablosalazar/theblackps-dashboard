@@ -25,7 +25,22 @@ class FormEmployee extends Component {
   constructor(props) {
     
     super(props);
-    let data = {};
+    let data = {
+      photo: '',
+      code: '',
+      first_name: '',
+      last_name: '',
+      document_type: '',
+      document_number: '',
+      email: '',
+      phone: '',
+      address: '',
+      address: '',
+      username: '',
+      password: '',
+      role: '',
+      active: true
+    };
     
     if (props.employee) {
       data = props.employee;

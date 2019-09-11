@@ -20,7 +20,12 @@ export default class FormCustomer extends Component {
   constructor(props) {
     
     super(props);
-    let data = {};
+    let data = {
+      name: '',
+      document_type: '',
+      document_number: '',
+      phone: '',
+    };
     
     if (props.customer) {
       data = props.customer;
@@ -31,7 +36,7 @@ export default class FormCustomer extends Component {
       loading: false,
       error: null,
       redirect: false,
-      action: props.employee? 'edit': 'create',
+      action: props.customer? 'edit': 'create',
     }
   }
 
@@ -54,8 +59,10 @@ export default class FormCustomer extends Component {
       try {
         await updateCustomer(data.id, data);
         this.setState({loading: false, redirect:true});
+        
       } catch (error) {
         this.setState({ error, loading: false });
+        console.log(error);
         scrollToTop(500);
       }
     }
@@ -68,7 +75,7 @@ export default class FormCustomer extends Component {
     let errors = {};
     
     Object.keys(values).forEach((value) => {
-      if (values[value] === '' && value !== 'phone' && value !== 'address' && value !== 'photo') {
+      if (values[value] === '' && value !== 'phone' && value !== 'address') {
         errors[value] = 'Este campo es obligatorio';
       }
     });
@@ -78,6 +85,25 @@ export default class FormCustomer extends Component {
     }
 
     return errors;
+  }
+
+  showErrorMessages = () => {
+    const { error } = this.state;
+    if (typeof error === 'string' ) {
+      return error + '';
+    }
+
+    const messages = Object.values(error);
+    return (
+      <Fragment>
+        <h5>Se presentó un problema con los siguientes campos: </h5>
+        <ul>
+          {messages.map((message, index) => {
+            return <li key={index}>{message[0]}</li>
+          })}
+        </ul>
+      </Fragment>
+    )
   }
 
   handleOnChange = (e) => {
@@ -90,9 +116,9 @@ export default class FormCustomer extends Component {
   }
 
   render() {
-    const { data, loading, error, error_generate_credentials, redirect, action } = this.state;
+    const { data, loading, error, redirect, action } = this.state;
     if (redirect) {
-      return <Redirect to='/empleados/lista'/>;
+      return <Redirect to='/clientes/lista'/>;
     }
     return (
       <Row className="mb-4">
@@ -124,8 +150,8 @@ export default class FormCustomer extends Component {
 
                         <FormGroup>
                           <Label>Nombre <span className="req">*</span></Label>
-                          <Field className="form-control" name="first_name" value={data.first_name} onChange={this.handleOnChange} />
-                          {errors.first_name && touched.first_name && <div className="invalid-feedback d-block">{errors.first_name}</div>}
+                          <Field className="form-control" name="name" value={data.name} onChange={this.handleOnChange} />
+                          {errors.name && touched.name && <div className="invalid-feedback d-block">{errors.name}</div>}
                         </FormGroup>
 
                         <FormGroup>

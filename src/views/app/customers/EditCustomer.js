@@ -3,17 +3,17 @@ import { Row, Alert } from "reactstrap";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import { Redirect, NavLink } from 'react-router-dom';
 import Breadcrumb from "../../../containers/navs/Breadcrumb";
-import DeleteEmployeeModal from "../../../containers/modals/DeleteEmployeeModal";
+// import DeleteEmployeeModal from "../../../containers/modals/DeleteEmployeeModal";
 
-import { getEmployee, deleteEmployee } from "../../../api/employeeApi";
+import { getCustomer, deleteCustomer } from "../../../api/customerApi";
 import FormEmployee from '../../../containers/forms/FormEmployee';
-import { async } from "q";
+import FormCustomer from "../../../containers/forms/FormCustomer";
 
-class EditEmployee extends Component {
+class EditCustomer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      employee: {},
+      customer: {},
       isLoading: true,
       error: null,
       modalOpen: false,
@@ -22,15 +22,15 @@ class EditEmployee extends Component {
   }
   
   componentDidMount() {
-    const employeeId = this.props.match.params.employeeId;
-    this.getEmployee(employeeId);
+    const id = this.props.match.params.customerId;
+    this.getCustomer(id);
   }
 
-  getEmployee = async (id) => {
+  getCustomer = async (id) => {
     try {
-      const response = await getEmployee(id);
+      const response = await getCustomer(id);
       this.setState({
-        employee: response,
+        customer: response,
         isLoading: false,
       })
     } catch (error) {
@@ -41,9 +41,9 @@ class EditEmployee extends Component {
     }
   }
 
-  deleteEmployee = async (id) => {
+  deleteCustomer = async (id) => {
     try {
-      const response = await deleteEmployee(id);
+      const response = await deleteCustomer(id);
       this.setState({
         modalOpen: false,
         redirect: true,
@@ -62,9 +62,9 @@ class EditEmployee extends Component {
   }
 
   render() {
-    const { employee, isLoading, error, modalOpen, redirect } = this.state;
+    const { customer, isLoading, error, modalOpen, redirect } = this.state;
     if (redirect) {
-      return <Redirect to='/empleados/lista'/>;
+      return <Redirect to='/clientes/lista'/>;
     }
     return isLoading ? (
       <div className="loading" />
@@ -75,13 +75,13 @@ class EditEmployee extends Component {
             <Breadcrumb heading="Detalle del empleado" match={this.props.match} />
             <div className="text-zero top-right-button-container">
               <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Borrar empleado </button>
-              <NavLink to="/empleados/lista" className="btn btn-sm btn-outline-dark mr-3">Salir </NavLink>
+              <NavLink to="/clientes/lista" className="btn btn-sm btn-outline-dark mr-3">Salir </NavLink>
             </div>
             <Separator className="mb-5" />
           </Colxx>
         </Row>
         <Row>
-          <Colxx xs="12" md="12" className="mb-3">
+          <Colxx xs="6" md="6" className="mb-3">
             {error? 
               <Alert
                 color="danger"
@@ -89,16 +89,16 @@ class EditEmployee extends Component {
                 {error}
               </Alert>
               :
-              <FormEmployee employee={employee} />
+              <FormCustomer customer={customer} />
             }
           </Colxx>    
         </Row>
-        <DeleteEmployeeModal 
-          employee={employee} 
+        {/* <DeleteEmployeeModal 
+          customer={customer} 
           toggleModal={this.toggleModal} 
           modalOpen={modalOpen}
           handleSubmit={this.deleteEmployee}
-        />
+        /> */}
       </Fragment>
 
       
@@ -106,4 +106,4 @@ class EditEmployee extends Component {
   }
 }
 
-export default EditEmployee;
+export default EditCustomer;

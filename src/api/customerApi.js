@@ -33,21 +33,21 @@ export async function getCustomer(id) {
 }
 
 
-export async function createCustomer(employee) {
+export async function createCustomer(customer) {
   try {
-    const data  = await axiosInstance.post('/customers', getFormData(employee));
+    const data  = await axiosInstance.post('/customers', getFormData(customer));
     return data.data;
   } catch (error) {
     throw error.response.data.error;
   }
 }
 
-export async function updateCustomer(id, employee) {
+export async function updateCustomer(id, customer) {
   try {
-    const data  = await axiosInstance.post(`/customers/${id}`, getFormData(employee, 'PUT'));
+    const data  = await axiosInstance.post(`/customers/${id}`, getFormData(customer, 'PUT'));
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response.data.error || error.response.data.message;
   }
 }
 

@@ -1,7 +1,10 @@
 
 validar error de conexion en login
 BORRADO SOFT luego no permite ingresar una persona con los mismo datos
-
+agregar direccion, correo electronico a cliente
+borrar imagenes con migrate refresh
+rol no esta validando
+cambiar icono de rotar imagen
 DONE 
 validar que tipo de documento sea numerico esto tiene un error
 agregar direccion y activo a empleados

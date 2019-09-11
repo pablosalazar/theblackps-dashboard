@@ -166,8 +166,8 @@ export default class ListCustomers extends Component {
                       <thead className="text-primary">
                         <tr>
                           <th>Nombre completo</th>
-                          <th>Teléfono</th>
                           <th>Número de documento</th>
+                          <th>Teléfono</th>
                           <th className="text-center">Acciones</th>                          
                         </tr>
                       </thead>
@@ -179,8 +179,8 @@ export default class ListCustomers extends Component {
                               {item.name}
                             </NavLink>
                             </td>
-                            <td>{item.phone}</td>
                             <td>{item.document_number}</td>
+                            <td>{item.phone}</td>
                             <td className="td-actions text-center">
                               <NavLink to={`/clientes/detalle/${item.id}`} className="text-center">
                                 <i className="glyph-icon simple-icon-eye"></i>
