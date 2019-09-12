@@ -69,7 +69,7 @@ export default class DeleteEmployeeModal extends Component {
             {({ errors, touched }) => (
               <Form autoComplete="off">
                 <FormGroup>
-                  <p>Para borrar la información del empleado <span className="text-uppercase text-primary font-weight-bold">{employee.first_name} {employee.last_name}</span> de la base de datos por favor ingrese su código:</p>
+                  <p>Para eliminar la información del empleado <span className="text-uppercase text-primary font-weight-bold">{employee.first_name} {employee.last_name}</span> de la base de datos por favor ingrese su código:</p>
                   <Field className="form-control" placeholder="Código del empleado" name="code" value={data.code} onChange={this.handleOnChange} />
                   {errors.code && touched.code && <div className="invalid-feedback d-block">{errors.code}</div>}
                 </FormGroup>
@@ -80,7 +80,7 @@ export default class DeleteEmployeeModal extends Component {
         </ModalBody>
         <ModalFooter>
           <Button color="dark" outline onClick={toggleModal}>Cancelar</Button>
-          <Button color="secondary" onClick={() => this.onClickDeleteButton()}>Eliminar</Button>{" "}
+          <Button color="secondary" onClick={() => this.onClickDeleteButton()}>Eliminar</Button>
         </ModalFooter>
       </Modal>
     )

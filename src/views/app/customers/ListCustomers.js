@@ -97,7 +97,6 @@ export default class ListCustomers extends Component {
   };
 
   render() {
-
     const {
       isLoading, 
       error,
@@ -147,7 +146,7 @@ export default class ListCustomers extends Component {
             pageSizes={pageSizes}
           />
           <Row>
-            {items.length === 0?
+            {items.length === 0 ?
               <Colxx xxs="12" className="mb-3">
               <Alert
                 color="dark"

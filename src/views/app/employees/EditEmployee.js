@@ -43,7 +43,7 @@ class EditEmployee extends Component {
 
   deleteEmployee = async (id) => {
     try {
-      const response = await deleteEmployee(id);
+      await deleteEmployee(id);
       this.setState({
         modalOpen: false,
         redirect: true,
@@ -74,7 +74,7 @@ class EditEmployee extends Component {
           <Colxx xxs="12">
             <Breadcrumb heading="Detalle del empleado" match={this.props.match} />
             <div className="text-zero top-right-button-container">
-              <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Borrar empleado </button>
+              <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Eliminar empleado </button>
               <NavLink to="/empleados/lista" className="btn btn-sm btn-outline-dark mr-3">Salir </NavLink>
             </div>
             <Separator className="mb-5" />

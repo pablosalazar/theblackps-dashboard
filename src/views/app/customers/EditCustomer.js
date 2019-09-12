@@ -1,12 +1,19 @@
 import React, { Component, Fragment } from "react";
-import { Row, Alert } from "reactstrap";
+
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import { Redirect, NavLink } from 'react-router-dom';
 import Breadcrumb from "../../../containers/navs/Breadcrumb";
-// import DeleteEmployeeModal from "../../../containers/modals/DeleteEmployeeModal";
+import {
+  Row,
+  Alert,
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
 
 import { getCustomer, deleteCustomer } from "../../../api/customerApi";
-import FormEmployee from '../../../containers/forms/FormEmployee';
 import FormCustomer from "../../../containers/forms/FormCustomer";
 
 class EditCustomer extends Component {
@@ -41,9 +48,10 @@ class EditCustomer extends Component {
     }
   }
 
-  deleteCustomer = async (id) => {
+  deleteCustomer = async () => {
+    const { customer } = this.state;
     try {
-      const response = await deleteCustomer(id);
+      await deleteCustomer(customer.id);
       this.setState({
         modalOpen: false,
         redirect: true,
@@ -72,9 +80,9 @@ class EditCustomer extends Component {
       <Fragment>
         <Row>
           <Colxx xxs="12">
-            <Breadcrumb heading="Detalle del empleado" match={this.props.match} />
+            <Breadcrumb heading="Detalle del cliente" match={this.props.match} />
             <div className="text-zero top-right-button-container">
-              <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Borrar empleado </button>
+              <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Eliminar cliente </button>
               <NavLink to="/clientes/lista" className="btn btn-sm btn-outline-dark mr-3">Salir </NavLink>
             </div>
             <Separator className="mb-5" />
@@ -93,12 +101,19 @@ class EditCustomer extends Component {
             }
           </Colxx>    
         </Row>
-        {/* <DeleteEmployeeModal 
-          customer={customer} 
-          toggleModal={this.toggleModal} 
-          modalOpen={modalOpen}
-          handleSubmit={this.deleteEmployee}
-        /> */}
+        
+        <Modal isOpen={modalOpen} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>
+            Borrar cliente
+          </ModalHeader>
+          <ModalBody>
+            ¿Desea borrar la información de <span className="text-primary">{customer.name}</span> de la lista de clientes?
+          </ModalBody>
+          <ModalFooter>
+            <Button color="dark" outline onClick={this.toggleModal}>No, Cancelar</Button>
+            <Button color="secondary" onClick={this.deleteCustomer}>Sí, Eliminar</Button>
+          </ModalFooter>
+        </Modal>
       </Fragment>
 
       

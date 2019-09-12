@@ -62,7 +62,6 @@ export default class FormCustomer extends Component {
         
       } catch (error) {
         this.setState({ error, loading: false });
-        console.log(error);
         scrollToTop(500);
       }
     }
