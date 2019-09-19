@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeEvery } from 'redux-saga/effects';
-import { servicePath } from '../../constants/defaultValues';
+import { API_URL, BASE_URI } from '../../constants/defaultValues';
 import axios from 'axios';
 
 import {
@@ -15,10 +15,10 @@ import {
 
 const loginWithCredentialsAsync = async (login, password) => {
   try {
-    const response = await axios.post(servicePath + 'login', {login, password});
+    const response = await axios.post(API_URL + BASE_URI + '/login', {login, password});
     return response.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   } 
 }
 
@@ -41,7 +41,7 @@ function* loginWithCredentials({ payload }) {
 
 const logoutAsync = async (history) => {
   const token = localStorage.getItem('token');
-  await axios.get(servicePath + 'logout').then(authUser => authUser).catch(error => error);
+  await axios.get(API_URL + BASE_URI + '/logout').then(authUser => authUser).catch(error => error);
   history.push('/')
 }
 
@@ -52,6 +52,7 @@ function* logout({payload}) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
   } catch (error) {
+    
   }
 }
 

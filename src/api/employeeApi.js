@@ -15,10 +15,10 @@ export async function getEmployees(pageSize, page, orderBy, search) {
         &page=${page}
         &orderBy=${orderBy}
         &search=${search}`
-      );
+      ); 
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -28,7 +28,7 @@ export async function getEmployee(id) {
     const data  = await axiosInstance.get(`/employees/${id}`);
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -38,7 +38,7 @@ export async function createEmployee(employee) {
     const data  = await axiosInstance.post('/employees', getFormData(employee));
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -47,7 +47,7 @@ export async function updateEmployee(id, employee) {
     const data  = await axiosInstance.post(`/employees/${id}`, getFormData(employee, 'PUT'));
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -56,7 +56,7 @@ export async function deleteEmployee(id) {
     const data  = await axiosInstance.delete(`/employees/${id}`);
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 

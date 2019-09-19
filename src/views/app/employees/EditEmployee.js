@@ -100,8 +100,6 @@ class EditEmployee extends Component {
           handleSubmit={this.deleteEmployee}
         />
       </Fragment>
-
-      
     );
   }
 }

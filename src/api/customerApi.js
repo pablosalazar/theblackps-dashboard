@@ -18,7 +18,7 @@ export async function getCustomers(pageSize, page, orderBy, search) {
       );
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -28,7 +28,7 @@ export async function getCustomer(id) {
     const data  = await axiosInstance.get(`/customers/${id}`);
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -38,7 +38,7 @@ export async function createCustomer(customer) {
     const data  = await axiosInstance.post('/customers', getFormData(customer));
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -47,7 +47,7 @@ export async function updateCustomer(id, customer) {
     const data  = await axiosInstance.post(`/customers/${id}`, getFormData(customer, 'PUT'));
     return data.data;
   } catch (error) {
-    throw error.response.data.error || error.response.data.message;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 
@@ -56,7 +56,7 @@ export async function deleteCustomer(id) {
     const data  = await axiosInstance.delete(`/customers/${id}`);
     return data.data;
   } catch (error) {
-    throw error.response.data.error;
+    throw error.response ? error.response.data.error : error.message;
   }
 }
 

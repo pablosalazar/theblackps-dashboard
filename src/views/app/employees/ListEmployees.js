@@ -47,11 +47,11 @@ class ListEmployees extends Component {
     try {
       const response = await getEmployees(selectedPageSize, currentPage, selectedOrderOption.column, search);
       this.setState({
-            totalPage: response.last_page,
-            items: response.data,
-            totalItemCount: response.total,
-            isLoading: false,
-          });
+        totalPage: response.last_page,
+        items: response.data,
+        totalItemCount: response.total,
+        isLoading: false,
+      });
     } catch (error) {
       this.setState({
         error,
@@ -115,7 +115,7 @@ class ListEmployees extends Component {
     const { match } = this.props;
     const startIndex = (currentPage - 1) * selectedPageSize;
     const endIndex = currentPage * selectedPageSize;
-
+    
     if (error) {
       return (
         <Colxx xxs="12" className="mb-3">
@@ -176,7 +176,7 @@ class ListEmployees extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {items.map( (item, index) => (
+                        {/* {items.map( (item, index) => (
                           <tr key={index}>
                             <td>
                               <div className="avatar-table">
@@ -197,7 +197,7 @@ class ListEmployees extends Component {
                               </NavLink>
                             </td>
                           </tr>
-                        ))}
+                        ))} */}
                       </tbody>
                     </Table>
                   </CardBody>
