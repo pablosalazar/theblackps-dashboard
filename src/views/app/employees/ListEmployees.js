@@ -176,7 +176,7 @@ class ListEmployees extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {/* {items.map( (item, index) => (
+                        {items.length > 0 && items.map( (item, index) => (
                           <tr key={index}>
                             <td>
                               <div className="avatar-table">
@@ -197,7 +197,7 @@ class ListEmployees extends Component {
                               </NavLink>
                             </td>
                           </tr>
-                        ))} */}
+                        ))}
                       </tbody>
                     </Table>
                   </CardBody>

@@ -30,16 +30,17 @@ class FormEmployee extends Component {
       code: '',
       first_name: '',
       last_name: '',
+      gender: '',
+      birthdate: '',
       document_type: '',
       document_number: '',
       email: '',
       phone: '',
       address: '',
-      address: '',
       username: '',
       password: '',
       role: '',
-      active: true
+      active: true,
     };
     
     if (props.employee) {
@@ -369,6 +370,7 @@ class FormEmployee extends Component {
                               this.setState({ data: { ...data, active: !data.active} });
                             }}
                           />
+                          { Boolean(data.active) ? <p className="mt-1 text-primary">ACTIVO</p> : <p className="mt-1 text-muted">INACTIVO</p>}
                         </FormGroup>
                         
                       </Colxx>
