@@ -3,8 +3,14 @@ import { Formik, Form, Field } from 'formik';
 import { Redirect, NavLink } from 'react-router-dom';
 import Resizer from 'react-image-file-resizer';
 import Switch from "rc-switch";
-import { RESOURCE_URL } from "../../constants/defaultValues";
 import "rc-switch/assets/index.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+
+
+import { RESOURCE_URL } from "../../constants/defaultValues";
+
 import { scrollToTop } from '../../helpers/utils';
 import avatar from '../../assets/avatar.png';
 
@@ -227,8 +233,17 @@ class FormEmployee extends Component {
     if (file) {
       this.resizeFile(file);
     }
-    
   }
+
+  handleChangeDate = date => {
+    const { data } = this.state;
+    this.setState({
+      data: {
+        ...data,
+        birthdate: date,
+      } 
+    });
+  };
 
   openFileWindow = () => {
     document.getElementById('image-file').click();
@@ -277,12 +292,7 @@ class FormEmployee extends Component {
                       </Colxx>             
                       <Colxx sm={4}>
                         <h6 className="mb-4 text-primary">Datos personales</h6>
-                        <FormGroup>
-                          <Label>Código <span className="req">*</span></Label>
-                          <Field className="form-control" name="code" value={data.code} onChange={this.handleOnChange}/>
-                          {errors.code && touched.code && <div className="invalid-feedback d-block">{errors.code}</div>}
-                        </FormGroup>
-
+                        
                         <FormGroup>
                           <Label>Nombre <span className="req">*</span></Label>
                           <Field className="form-control" name="first_name" value={data.first_name} onChange={this.handleOnChange} />
@@ -294,6 +304,30 @@ class FormEmployee extends Component {
                           <Field className="form-control" name="last_name" value={data.last_name} onChange={this.handleOnChange} />
                           {errors.last_name && touched.last_name && <div className="invalid-feedback d-block">{errors.last_name}</div>}
                         </FormGroup>
+
+                        <FormGroup>
+                          <Label>Género <span className="req">*</span></Label>
+                          <Field className="form-control" component="select" name="gender" value={data.gender} onChange={this.handleOnChange}>
+                            <option value="">-- Seleccione una opción --</option>
+                            <option value="Hombre">Hombre</option>
+                            <option value="Mujer">Mujer</option>
+                          </Field>
+                          {errors.gender && touched.gender && <div className="invalid-feedback d-block">{errors.gender}</div>}
+                        </FormGroup>
+
+                        <FormGroup>
+                          <Label>Fecha de nacimiento <span className="req">*</span></Label>
+                          <DatePicker
+                            selected={data.birthdate}
+                            onChange={this.handleChangeDate}
+                            showMonthDropdown
+                            showYearDropdown
+                            dropdownMode="select"
+                            maxDate={moment()}
+                            placeholderText={"DD/MM/YYYY"}
+                          />
+                        </FormGroup>
+                        
 
                         <FormGroup>
                           <Label>Tipo de documento <span className="req">*</span></Label>
@@ -312,6 +346,7 @@ class FormEmployee extends Component {
                           {errors.document_number && touched.document_number && <div className="invalid-feedback d-block">{errors.document_number}</div>}
                         </FormGroup>
                         
+                        <h6 className="mb-4 text-primary">Datos de contacto</h6>
                         <FormGroup>
                             <Label>Email <span className="req">*</span></Label>
                             <Field className="form-control" name="email" value={data.email} onChange={this.handleOnChange} />

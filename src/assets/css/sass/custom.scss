@@ -83,5 +83,43 @@ table td.td-actions {
     background-size: cover;
     padding: 80px 40px;
   }
+}
 
+
+.react-datepicker__header__dropdown {
+  margin: 15px 0;
+}
+
+.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+  color: #b1b1b1!important;
+}
+
+.react-datepicker__day--disabled {
+  color: #666!important;
+}
+
+.react-datepicker__current-month, .react-datepicker-time__header {
+  color: #b98700 !important;
+}
+
+.react-datepicker__header select {
+  border-radius: 0.1rem;
+  outline: medium none invert !important;
+  outline: initial !important;
+  box-shadow: none !important;
+  box-shadow: initial !important;
+  font-size: 0.8rem;
+  padding: 0.7rem 0.75rem 0.65rem 0.75rem;
+  line-height: 1.5;
+  border: 1px solid #424242;
+  background: #232223;
+  color: #969696;
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(240, 240, 240, 0.3) !important;
+}
+
+.react-datepicker__day-name {
+  text-transform: uppercase;
 }
