@@ -23,7 +23,7 @@ class ListEmployees extends Component {
         { column: "document_number", label: "Númerco de documento" },
         { column: "role", label: "Rol" },
       ],
-      selectedOrderOption: { column: "id", label: "ID" },
+      selectedOrderOption: { column: "code", label: "Código" },
       pageSizes: [10, 20, 30, 50],
       currentPage: 1,
       totalItemCount: 0,
@@ -168,8 +168,8 @@ class ListEmployees extends Component {
                       <thead className="text-primary">
                         <tr>
                           <th>Foto</th>
-                          <th>Nombre completo</th>
                           <th>Código de empleado</th>
+                          <th>Nombre completo</th>
                           <th>Número de documento</th>
                           <th>Cargo</th>
                           <th className="text-center">Acciones</th>                          
@@ -183,12 +183,12 @@ class ListEmployees extends Component {
                               <figure className="image-avatar" style={{backgroundImage: `url(${RESOURCE_URL}/img/employees/${item.image})`}}></figure>
                               </div>
                             </td>
-                            <td>
-                            <NavLink to={`/empleados/detalle/${item.id}`}>
-                              {item.first_name} {item.last_name}
-                            </NavLink>
-                            </td>
                             <td>{item.code}</td>
+                            <td>
+                              <NavLink to={`/empleados/detalle/${item.id}`}>
+                                {item.first_name} {item.last_name}
+                              </NavLink>
+                            </td>
                             <td>{item.document_number}</td>
                             <td>{item.role}</td>
                             <td className="td-actions text-center">

@@ -8,7 +8,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
-
 import { RESOURCE_URL } from "../../constants/defaultValues";
 
 import { scrollToTop } from '../../helpers/utils';
@@ -40,6 +39,7 @@ class FormEmployee extends Component {
       birthdate: '',
       document_type: '',
       document_number: '',
+      nacionality: '',
       email: '',
       phone: '',
       address: '',
@@ -47,6 +47,9 @@ class FormEmployee extends Component {
       password: '',
       role: '',
       active: true,
+      contact_name: '',
+      contact_relationship: '',
+      contact_number: '',
     };
     
     if (props.employee) {
@@ -75,7 +78,7 @@ class FormEmployee extends Component {
     if (action === 'create') {
       try {
         await createEmployee(data);
-        this.setState({loading: false, redirect:true});
+        this.setState({loading: false, redirect: true});
       } catch (error) {
         this.setState({ error, loading: false });
         scrollToTop(500);
@@ -84,7 +87,7 @@ class FormEmployee extends Component {
     } else if (action === 'edit') {
       try {
         await updateEmployee(data.id, data);
-        this.setState({loading: false, redirect:true});
+        this.setState({loading: false, redirect: true});
       } catch (error) {
         this.setState({ error, loading: false });
         scrollToTop(500);
@@ -99,7 +102,14 @@ class FormEmployee extends Component {
     let errors = {};
     
     Object.keys(values).forEach((value) => {
-      if (values[value] === '' && value !== 'phone' && value !== 'address' && value !== 'photo') {
+      if (values[value] === '' && 
+        value !== 'phone' && 
+        value !== 'address' && 
+        value !== 'photo' &&
+        value !== 'contact_name' &&
+        value !== 'contact_relationship' &&
+        value !== 'contact_number'
+      ) {
         errors[value] = 'Este campo es obligatorio';
       }
     });
@@ -119,7 +129,7 @@ class FormEmployee extends Component {
     const { data, error_generate_credentials } = this.state;
     const { first_name, last_name, document_number, code } = data;
 
-    if(error_generate_credentials && first_name && last_name && document_number && code) {
+    if (error_generate_credentials && first_name && last_name && document_number && code) {
       this.setState({
         error_generate_credentials: false,
       })
@@ -240,7 +250,7 @@ class FormEmployee extends Component {
     this.setState({
       data: {
         ...data,
-        birthdate: date,
+        birthdate: moment(date).format('L'),
       } 
     });
   };
@@ -285,14 +295,14 @@ class FormEmployee extends Component {
                 onSubmit={this.handleSubmit}
               >
                 {({ errors, touched }) => (
-                  <Form className="av-tooltip tooltip-label-right" autoComplete="off">
+                  <Form className="employee-form av-tooltip tooltip-label-right" autoComplete="off">
                     <Row>
                       <Colxx sm={12}>
                         <p className="text-right">Los campos marcados con (<span className="req">*</span>) son obligatorios</p>
                       </Colxx>             
                       <Colxx sm={4}>
+
                         <h6 className="mb-4 text-primary">Datos personales</h6>
-                        
                         <FormGroup>
                           <Label>Nombre <span className="req">*</span></Label>
                           <Field className="form-control" name="first_name" value={data.first_name} onChange={this.handleOnChange} />
@@ -318,7 +328,8 @@ class FormEmployee extends Component {
                         <FormGroup>
                           <Label>Fecha de nacimiento <span className="req">*</span></Label>
                           <DatePicker
-                            selected={data.birthdate}
+                            selected={data.birthdate ? moment(data.birthdate) : null}
+                            name="birthdate"
                             onChange={this.handleChangeDate}
                             showMonthDropdown
                             showYearDropdown
@@ -326,8 +337,8 @@ class FormEmployee extends Component {
                             maxDate={moment()}
                             placeholderText={"DD/MM/YYYY"}
                           />
+                          {errors.birthdate && touched.birthdate && <div className="invalid-feedback d-block">{errors.birthdate}</div>}
                         </FormGroup>
-                        
 
                         <FormGroup>
                           <Label>Tipo de documento <span className="req">*</span></Label>
@@ -345,6 +356,12 @@ class FormEmployee extends Component {
                           <Field className="form-control" name="document_number" value={data.document_number} onChange={this.handleOnChange} />
                           {errors.document_number && touched.document_number && <div className="invalid-feedback d-block">{errors.document_number}</div>}
                         </FormGroup>
+
+                        <FormGroup>
+                          <Label>Nacionalidad <span className="req">*</span></Label>
+                          <Field className="form-control" name="nacionality" value={data.nacionality} onChange={this.handleOnChange} />
+                          {errors.nacionality && touched.nacionality && <div className="invalid-feedback d-block">{errors.nacionality}</div>}
+                        </FormGroup>
                         
                         <h6 className="mb-4 text-primary">Datos de contacto</h6>
                         <FormGroup>
@@ -358,13 +375,39 @@ class FormEmployee extends Component {
                           <Field className="form-control" name="phone" value={data.phone} onChange={this.handleOnChange} />
                           {errors.phone && touched.phone && <div className="invalid-feedback d-block">{errors.phone}</div>}
                         </FormGroup>
+
                         <FormGroup>
                           <Label>Dirección</Label>
                           <Field className="form-control" name="address" value={data.address} onChange={this.handleOnChange} />
                           {errors.address && touched.address && <div className="invalid-feedback d-block">{errors.address}</div>}
                         </FormGroup>
+
                       </Colxx>
+
                       <Colxx sm={4}>
+                        <h6 className="mb-4 text-primary">Datos del empleado</h6>
+                        <FormGroup>
+                          <Label>Código de empleado <span className="req">*</span></Label>
+                          <Field className="form-control" name="code" value={data.code} onChange={this.handleOnChange}/>
+                          {errors.code && touched.code && <div className="invalid-feedback d-block">{errors.code}</div>}
+                        </FormGroup>
+
+                        <FormGroup>
+                          <Label>Cargo <span className="req">*</span></Label>
+                          <Field className="form-control" component="select" name="role" value={data.role} onChange={this.handleOnChange}>
+                            <option value="">-- Seleccione una opción --</option>
+                            <option value="Administrativo">Administrativo</option>
+                            <option value="Analista">Analista</option>
+                            <option value="Jefe de operaciones">Jefe de operaciones</option>
+                            <option value="Coordinador logístico">Coordinador logístico </option>
+                            <option value="Supervisor">Supervisor</option>
+                            <option value="Líder de punto">Líder de punto</option>
+                            <option value="Operario">Operario</option>
+                          </Field>
+                          {errors.role && touched.role && <div className="invalid-feedback d-block">{errors.role}</div>}
+                        </FormGroup>
+                        <br/>
+
                         <h6 className="mb-4 text-primary">Datos de la cuenta</h6>
                         <FormGroup>
                           <Label>Usuario <span className="req">*</span></Label>
@@ -385,34 +428,26 @@ class FormEmployee extends Component {
                         <div className="text-right">
                           <Button outline color="dark" onClick={this.generateCredentials} disabled={loading}>Generar credenciales</Button>
                         </div>
-                        <hr/>
-                        <FormGroup>
-                          <Label>Rol <span className="req">*</span></Label>
-                          <Field className="form-control" component="select" name="role" value={data.role} onChange={this.handleOnChange}>
-                            <option value="">-- Seleccione una opción --</option>
-                            <option value="EMPLEADO">Empleado</option>
-                            <option value="ADMIN">Admin</option>
-                          </Field>
-                          {errors.role && touched.role && <div className="invalid-feedback d-block">{errors.role}</div>}
-                        </FormGroup>
+                        <br/>
                         <br/>
                         <FormGroup>
-                          <label htmlFor="switch-active">Estado del empleado</label>
-                          <Switch
-                            className="custom-switch custom-switch-primary-inverse"
-                            checked={Boolean(data.active)}
-                            onChange={() => {
-                              this.setState({ data: { ...data, active: !data.active} });
-                            }}
-                          />
-                          { Boolean(data.active) ? <p className="mt-1 text-primary">ACTIVO</p> : <p className="mt-1 text-muted">INACTIVO</p>}
+                          <h6 className="mb-4 text-primary">Estado de la cuenta</h6>
+                          <div className="d-flex">
+                            <Switch
+                              className="custom-switch custom-switch-primary-inverse"
+                              checked={Boolean(data.active)}
+                              onChange={() => {
+                                this.setState({ data: { ...data, active: !data.active} });
+                              }}
+                            />
+                            { Boolean(data.active) ? <p className="mt-1 text-primary mt-1">ACTIVO</p> : <p className="mt-1 text-muted">INACTIVO</p>}
+                          </div>
                         </FormGroup>
-                        
                       </Colxx>
 
                       <Colxx sm={4}>
-                        <h6 className="mb-5 text-primary">Imagen</h6>
-                        <p>Elegir imagen</p>
+                        <h6 className="mb-5 text-primary">Foto</h6>
+                        <p>Elegir foto</p>
                         <div className="avatar mb-2 mr-4">
                           <figure className="image-avatar" style={{backgroundImage: `url(${this.state.imageToShow})`}}></figure>
                         </div>
@@ -425,6 +460,26 @@ class FormEmployee extends Component {
                         }
                         <input type="file" id="image-file" className="form-control d-none" name="photo" onChange={this.handleFileChange}/>
 
+                        
+                        <h6 className="mb-4 text-primary mt-5">Referencia personal</h6>
+                        
+                        <FormGroup>
+                          <Label>Nombre </Label>
+                          <Field className="form-control" name="contact_name" value={data.contact_name} onChange={this.handleOnChange} />
+                          {errors.contact_name && touched.contact_name && <div className="invalid-feedback d-block">{errors.contact_name}</div>}
+                        </FormGroup>
+
+                        <FormGroup>
+                          <Label>Parentesco</Label>
+                          <Field className="form-control" name="contact_relationship" value={data.contact_relationship} onChange={this.handleOnChange} />
+                          {errors.contact_relationship && touched.contact_relationship && <div className="invalid-feedback d-block">{errors.contact_relationship}</div>}
+                        </FormGroup>
+
+                        <FormGroup>
+                          <Label>Número de teléfono</Label>
+                          <Field className="form-control" name="contact_number" value={data.contact_number} onChange={this.handleOnChange} />
+                          {errors.contact_number && touched.contact_number && <div className="invalid-feedback d-block">{errors.contact_number}</div>}
+                        </FormGroup>
                       </Colxx>
                       
                     </Row>

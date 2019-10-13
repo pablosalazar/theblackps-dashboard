@@ -29,6 +29,7 @@ class EditEmployee extends Component {
   getEmployee = async (id) => {
     try {
       const response = await getEmployee(id);
+      
       this.setState({
         employee: response,
         isLoading: false,
