@@ -11,7 +11,7 @@ import main from "./views";
 import app from "./views/app";
 import Employees from "./views/app/employees";
 import Customers from "./views/app/customers";
-import Auth from './views/auth';
+import Auth from './views/Auth';
 import error from "./views/error";
 
 const AuthRoute = ({ component: Component, authUser, ...rest }) => (
