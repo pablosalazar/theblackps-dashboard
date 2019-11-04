@@ -41,7 +41,7 @@ class App extends Component {
     return (
       <div className="h-100">
         <React.Fragment>
-          <Router>
+          <Router basename="/">
             <Switch>
               <AuthRoute path="/app" authUser={loginUser} component={app} />
               <Route path="/empleados" component={Employees} />
