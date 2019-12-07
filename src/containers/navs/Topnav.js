@@ -144,7 +144,7 @@ class Topnav extends Component {
               <DropdownToggle className="p-0" color="empty">
                 <span className="name mr-1">{user.full_name}</span>
                 <div className="user-image">
-                  {user.image && <figure style={{backgroundImage: `url(${RESOURCE_URL}/img/employees/${user.image})`}} />}
+                  {user.image && <figure style={{backgroundImage: `url(${user.image})`}} />}
                 </div>
               </DropdownToggle>
               <DropdownMenu className="mt-3" right>

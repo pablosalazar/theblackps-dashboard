@@ -58,8 +58,8 @@ class FormEmployee extends Component {
     
     this.state = {
       data,
-      currentImage: props.employee ? `${RESOURCE_URL}/img/employees/${data.image}` : avatar,
-      imageToShow: props.employee ? `${RESOURCE_URL}/img/employees/${data.image}` : avatar,
+      currentImage: props.employee ? `${data.photo}` : avatar,
+      imageToShow: props.employee ? `${data.photo}` : avatar,
       loading: false,
       error: null,
       error_generate_credentials: false,
