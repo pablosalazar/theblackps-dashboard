@@ -15,7 +15,7 @@ import {
 
 const loginWithCredentialsAsync = async (login, password) => {
   try {
-    const response = await axios.post(API_URL + BASE_URI + '/login', {login, password});
+    const response = await axios.post(API_URL + BASE_URI + '/auth/login', {login, password});
     return response.data;
   } catch (error) {
     throw error.response ? error.response.data.error : error.message;

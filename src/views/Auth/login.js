@@ -23,6 +23,12 @@ class Login extends Component {
     })
   }
 
+  handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      this.onUserLogin();
+    }
+  }
+
   onUserLogin = async () => {
     this.setState({ isLoading: true, error: null});
     
@@ -75,12 +81,12 @@ class Login extends Component {
                   <span>Ingresa tu usuario o correo electrónico</span>
                 </Label>
                 <Label className="form-group has-float-label mb-4">
-                  <Input type="password" name="password" autoComplete="off" value={this.state.password} onChange={this.handleChange}/>
+                  <Input type="password" name="password" autoComplete="off" value={this.state.password} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>
                   <span>Contraseña</span>
                 </Label>
                 <div className="d-flex justify-content-between align-items-center">
                   <NavLink to={`/forgot-password`}>
-                    ¿Olvido su contraseña?
+                    ¿Olvidó su contraseña?
                   </NavLink>
                   <Button
                     color="primary"
