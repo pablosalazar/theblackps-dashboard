@@ -394,7 +394,7 @@ class FormEmployee extends Component {
 
                         <FormGroup>
                           <Label>Cargo <span className="req">*</span></Label>
-                          <Field className="form-control" component="select" name="role" value={data.role} onChange={this.handleOnChange}>
+                          <Field className="form-control" component="select" name="role" value={data.job_title} onChange={this.handleOnChange}>
                             <option value="">-- Seleccione una opción --</option>
                             <option value="Administrativo">Administrativo</option>
                             <option value="Analista">Analista</option>
@@ -404,7 +404,7 @@ class FormEmployee extends Component {
                             <option value="Líder de punto">Líder de punto</option>
                             <option value="Operario">Operario</option>
                           </Field>
-                          {errors.role && touched.role && <div className="invalid-feedback d-block">{errors.role}</div>}
+                          {errors.job_title && touched.job_title && <div className="invalid-feedback d-block">{errors.job_title}</div>}
                         </FormGroup>
                         <br/>
 
