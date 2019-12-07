@@ -40,8 +40,10 @@ function* loginWithCredentials({ payload }) {
 
 
 const logoutAsync = async (history) => {
-  const token = localStorage.getItem('token');
-  await axios.get(API_URL + BASE_URI + '/logout').then(authUser => authUser).catch(error => error);
+  const Authorization =  `Bearer ${localStorage.getItem('token')}`;
+  await axios.get(API_URL + BASE_URI + '/auth/logout', { headers: { Authorization: Authorization } })
+  .then(authUser => authUser)
+  .catch(error => error);
   history.push('/')
 }
 
@@ -52,7 +54,7 @@ function* logout({payload}) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
   } catch (error) {
-    
+ 
   }
 }
 

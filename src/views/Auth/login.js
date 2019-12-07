@@ -39,7 +39,7 @@ class Login extends Component {
         
    
     } else {
-      this.setState({error: "Ingresa los campos para iniciar sesion"});
+      this.setState({error: "Ingresa los campos para iniciar sesión"});
     }
   }
 
