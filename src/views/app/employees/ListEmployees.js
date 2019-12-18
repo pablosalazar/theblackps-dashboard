@@ -20,7 +20,7 @@ class ListEmployees extends Component {
         { column: "id", label: "id" },
         { column: "full_name", label: "Nombre" },
         { column: "code", label: "Código" },
-        { column: "document_number", label: "Númerco de documento" },
+        { column: "document_number", label: "Número de documento" },
         { column: "role", label: "Rol" },
       ],
       selectedOrderOption: { column: "code", label: "Código" },
