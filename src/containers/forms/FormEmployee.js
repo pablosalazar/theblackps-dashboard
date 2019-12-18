@@ -45,7 +45,7 @@ class FormEmployee extends Component {
       address: '',
       username: '',
       password: '',
-      role: '',
+      job_title: '',
       active: true,
       contact_name: '',
       contact_relationship: '',
@@ -394,7 +394,7 @@ class FormEmployee extends Component {
 
                         <FormGroup>
                           <Label>Cargo <span className="req">*</span></Label>
-                          <Field className="form-control" component="select" name="role" value={data.job_title} onChange={this.handleOnChange}>
+                          <Field className="form-control" component="select" name="job_title" value={data.job_title} onChange={this.handleOnChange}>
                             <option value="">-- Seleccione una opción --</option>
                             <option value="Administrativo">Administrativo</option>
                             <option value="Analista">Analista</option>
