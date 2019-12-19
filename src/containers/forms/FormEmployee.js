@@ -14,6 +14,8 @@ import { scrollToTop } from '../../helpers/utils';
 import avatar from '../../assets/avatar.png';
 
 import { createEmployee, updateEmployee } from '../../api/employeeApi';
+import { createUser, updateUser } from '../../api/userApi';
+import { createContact, updateContact } from '../../api/contactApi';
 
 import {
   Alert,
@@ -31,6 +33,7 @@ class FormEmployee extends Component {
     
     super(props);
     let data = {
+      // Employee
       photo: '',
       code: '',
       first_name: '',
@@ -40,13 +43,15 @@ class FormEmployee extends Component {
       document_type: '',
       document_number: '',
       nacionality: '',
-      email: '',
       phone: '',
       address: '',
+      job_title: '',
+      // User
+      email: '',
       username: '',
       password: '',
-      job_title: '',
       active: true,
+      // Contacts
       contact_name: '',
       contact_relationship: '',
       contact_number: '',
@@ -77,7 +82,22 @@ class FormEmployee extends Component {
 
     if (action === 'create') {
       try {
-        await createEmployee(data);
+        // create employee
+        const employee = await createEmployee(data);
+        // create user
+        await createUser({
+          ...data,
+          role: employee.job_title,
+          employee_id: employee.id, 
+        });
+        // create contacts
+        await createContact({
+          name: data.contact_name,
+          relationship: data.contact_relationship,
+          phone: data.contact_number,
+          employee_id: employee.id, 
+        });
+
         this.setState({loading: false, redirect: true});
       } catch (error) {
         this.setState({ error, loading: false });

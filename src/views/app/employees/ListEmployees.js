@@ -180,7 +180,7 @@ class ListEmployees extends Component {
                           <tr key={index}>
                             <td>
                               <div className="avatar-table">
-                              <figure className="image-avatar" style={{backgroundImage: `url(${item.photo})`}}></figure>
+                              <figure className="image-avatar" style={{backgroundImage: `url(${RESOURCE_URL}  /${item.photo})`}}></figure>
                               </div>
                             </td>
                             <td>{item.code}</td>
