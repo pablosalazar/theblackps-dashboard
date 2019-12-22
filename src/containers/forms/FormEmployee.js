@@ -30,7 +30,6 @@ import { Colxx, Separator } from "../../components/common/CustomBootstrap";
 
 class FormEmployee extends Component {
   constructor(props) {
-    
     super(props);
     let data = {
       // Employee
@@ -57,10 +56,6 @@ class FormEmployee extends Component {
       contact_number: '',
     };
     
-    if (props.employee) {
-      data = props.employee;
-    }
-    
     this.state = {
       data,
       currentImage: props.employee ? `${data.photo}` : avatar,
@@ -72,6 +67,45 @@ class FormEmployee extends Component {
       action: props.employee? 'edit': 'create',
       rotate: 90,
     }
+  }
+
+  componentDidMount = () => {
+    if (this.props.employee) {
+      this.loadEmployee();
+    }
+  }
+
+  loadEmployee = () => {
+    const { employee } = this.props;
+    const { user, contact } = employee;
+    
+    this.setState({
+      data: {
+         // Employee
+        photo: employee.photo,
+        code: employee.code,
+        first_name: employee.first_name,
+        last_name: employee.last_name,
+        gender: employee.gender,
+        birthdate: employee.birthdate,
+        document_type: employee.document_type,
+        document_number: employee.document_number,
+        nacionality: employee.nacionality,
+        phone: employee.phone,
+        address: employee.address,
+        job_title: employee.job_title,
+        // User
+        email: user.email,
+        username: user.username,
+        password: '',
+        active: user.active === 'true' ? true : false,
+        // Contacts
+        contact_name: contact.name,
+        contact_relationship: contact.relationship,
+        contact_number: contact.phone,
+      }
+    })
+
   }
 
   handleSubmit = async () => {

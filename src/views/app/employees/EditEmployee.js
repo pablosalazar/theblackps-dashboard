@@ -6,6 +6,8 @@ import Breadcrumb from "../../../containers/navs/Breadcrumb";
 import DeleteEmployeeModal from "../../../containers/modals/DeleteEmployeeModal";
 
 import { getEmployee, deleteEmployee } from "../../../api/employeeApi";
+import { getUser } from "../../../api/userApi";
+import { getContact } from "../../../api/contactApi";
 import FormEmployee from '../../../containers/forms/FormEmployee';
 import { async } from "q";
 
@@ -14,6 +16,8 @@ class EditEmployee extends Component {
     super(props);
     this.state = {
       employee: {},
+      user: {},
+      contact: {},
       isLoading: true,
       error: null,
       modalOpen: false,
@@ -26,12 +30,12 @@ class EditEmployee extends Component {
     this.getEmployee(employeeId);
   }
 
-  getEmployee = async (id) => {
+  getEmployee = async(id) => {
     try {
-      const response = await getEmployee(id);
-      
+      const employee = await getEmployee(id);
+  
       this.setState({
-        employee: response,
+        employee,
         isLoading: false,
       })
     } catch (error) {
