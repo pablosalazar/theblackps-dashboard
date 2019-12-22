@@ -81,6 +81,7 @@ class FormEmployee extends Component {
     
     this.setState({
       data: {
+        id: employee.id,
          // Employee
         photo: employee.photo,
         code: employee.code,
@@ -140,7 +141,34 @@ class FormEmployee extends Component {
 
     } else if (action === 'edit') {
       try {
-        await updateEmployee(data.id, data);
+        // update employee
+        const employee = await updateEmployee(data.id, data);
+        
+        // update user
+        const user = {
+          email: data.email,
+          username: data.username,
+          password: data.password,
+          active: data.active ? 'true' : 'false',
+          role: data.job_title,
+          employee_id: employee.id, 
+        }
+
+        if (data.password === '') {
+          delete user.password;
+        }
+        await updateUser(employee.user.id, user);
+
+        // // update contacts
+        const contact = {
+          name: data.contact_name,
+          relationship: data.contact_relationship,
+          phone: data.contact_number,
+          employee_id: employee.id, 
+        }
+
+        await updateContact(employee.contact.id, contact);
+
         this.setState({loading: false, redirect: true});
       } catch (error) {
         this.setState({ error, loading: false });
@@ -153,18 +181,33 @@ class FormEmployee extends Component {
 
   validate = () => {
     const values = this.state.data;
+    const { action } = this.state;
     let errors = {};
     
     Object.keys(values).forEach((value) => {
-      if (values[value] === '' && 
-        value !== 'phone' && 
-        value !== 'address' && 
-        value !== 'photo' &&
-        value !== 'contact_name' &&
-        value !== 'contact_relationship' &&
-        value !== 'contact_number'
-      ) {
-        errors[value] = 'Este campo es obligatorio';
+      if (action === 'edit') {
+        if (values[value] === '' && 
+          value !== 'phone' && 
+          value !== 'address' && 
+          value !== 'photo' &&
+          value !== 'contact_name' &&
+          value !== 'contact_relationship' &&
+          value !== 'contact_number' &&
+          value !== 'password'
+        ) {
+          errors[value] = 'Este campo es obligatorio';
+        }
+      } else {
+        if (values[value] === '' && 
+          value !== 'phone' && 
+          value !== 'address' && 
+          value !== 'photo' &&
+          value !== 'contact_name' &&
+          value !== 'contact_relationship' &&
+          value !== 'contact_number'
+        ) {
+          errors[value] = 'Este campo es obligatorio';
+        }
       }
     });
 
