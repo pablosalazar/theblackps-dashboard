@@ -6,6 +6,7 @@ import { getEmployees } from "../../../api/employeeApi";
 import { RESOURCE_URL } from "../../../constants/defaultValues";
 import Pagination from "../../../containers/pages/Pagination";
 import ListPageHeading from "../../../containers/pages/ListPageHeading";
+import avatar from '../../../assets/avatar.png';
 class ListEmployees extends Component {
 
   constructor(props) {
@@ -99,6 +100,13 @@ class ListEmployees extends Component {
     );
   };
 
+  getPhoto(photo){
+    if(photo) {
+      return `${RESOURCE_URL}/img/employees/${photo}`
+    }
+    return avatar;
+  }
+
   render() {
     const {
       isLoading, 
@@ -180,7 +188,7 @@ class ListEmployees extends Component {
                           <tr key={index}>
                             <td>
                               <div className="avatar-table">
-                              <figure className="image-avatar" style={{backgroundImage: `url(${RESOURCE_URL}  /${item.photo})`}}></figure>
+                              <figure className="image-avatar" style={{backgroundImage: `url(${this.getPhoto(item.photo)})`}}></figure>
                               </div>
                             </td>
                             <td>{item.code}</td>
