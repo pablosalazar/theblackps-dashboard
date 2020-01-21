@@ -12,7 +12,6 @@ import { RESOURCE_URL } from "../../constants/defaultValues";
 
 import { scrollToTop } from '../../helpers/utils';
 import avatar from '../../assets/avatar.png';
-
 import { createEmployee, updateEmployee } from '../../api/employeeApi';
 import { createUser, updateUser } from '../../api/userApi';
 import { createContact, updateContact } from '../../api/contactApi';
@@ -33,7 +32,7 @@ class FormEmployee extends Component {
     super(props);
     let data = {
       // Employee
-      photo: '',
+      photo: null,
       code: '',
       first_name: '',
       last_name: '',
@@ -58,8 +57,7 @@ class FormEmployee extends Component {
     
     this.state = {
       data,
-      currentImage: props.employee ? `${data.photo}` : avatar,
-      imageToShow: props.employee ? `${data.photo}` : avatar,
+      photoToShow: avatar,
       loading: false,
       error: null,
       error_generate_credentials: false,
@@ -67,6 +65,8 @@ class FormEmployee extends Component {
       action: props.employee? 'edit': 'create',
       rotate: 90,
     }
+
+    this.fileInputRef = React.createRef();
   }
 
   componentDidMount = () => {
@@ -78,12 +78,12 @@ class FormEmployee extends Component {
   loadEmployee = () => {
     const { employee } = this.props;
     const { user, contact } = employee;
-    
+
     this.setState({
       data: {
         id: employee.id,
          // Employee
-        photo: employee.photo,
+        photo: null,
         code: employee.code,
         first_name: employee.first_name,
         last_name: employee.last_name,
@@ -101,12 +101,13 @@ class FormEmployee extends Component {
         password: '',
         active: user.active === 'true' ? true : false,
         // Contacts
-        contact_name: contact.name,
-        contact_relationship: contact.relationship,
-        contact_number: contact.phone,
-      }
-    })
-
+        contact_name: contact ? contact.name : '',
+        contact_relationship: contact ? contact.relationship : '',
+        contact_number: contact ? contact.phone : '',
+      },
+      photoToShow: employee.photo ? `${RESOURCE_URL}/img/employees/${employee.photo}` : avatar,
+    });
+    
   }
 
   handleSubmit = async () => {
@@ -118,6 +119,10 @@ class FormEmployee extends Component {
     if (action === 'create') {
       try {
         // create employee
+        if (!data.photo) {
+          delete data.photo;
+        }
+
         const employee = await createEmployee(data);
         // create user
         await createUser({
@@ -141,6 +146,11 @@ class FormEmployee extends Component {
 
     } else if (action === 'edit') {
       try {
+
+        if (!data.photo) {
+          delete data.photo;
+        }
+
         // update employee
         const employee = await updateEmployee(data.id, data);
         
@@ -176,8 +186,6 @@ class FormEmployee extends Component {
       }
     }
   }
-
-  
 
   validate = () => {
     const values = this.state.data;
@@ -325,10 +333,9 @@ class FormEmployee extends Component {
           data: {
             ...data,
             photo: uri,
-            
           },
           rotate,
-          imageToShow: URL.createObjectURL(uri)
+          photoToShow: URL.createObjectURL(uri)
         })
       },
       'blob'
@@ -353,25 +360,28 @@ class FormEmployee extends Component {
   };
 
   openFileWindow = () => {
-    document.getElementById('image-file').click();
+    this.fileInputRef.current.click();
   }
 
   clearImage = () => {
     const { data } = this.state;
+    const { employee } = this.props;
     this.setState({
       data: {
         ...data,
-        photo: '',
+        photo: null,
       },
-      imageToShow: this.state.currentImage
-    })
+      photoToShow: employee && employee.photo ? `${RESOURCE_URL}/img/employees/${employee.photo}` : avatar,
+    });
+    this.fileInputRef.current.value = null;
   }
 
   render() {
-    const { data, loading, error, error_generate_credentials, redirect, action } = this.state;
+    const { data, loading, error, error_generate_credentials, redirect, action, photoToShow } = this.state;
     if (redirect) {
       return <Redirect to='/empleados/lista'/>;
     }
+
     return (
       <Row className="mb-4">
         <Colxx xxs="12">
@@ -546,16 +556,23 @@ class FormEmployee extends Component {
                         <h6 className="mb-5 text-primary">Foto</h6>
                         <p>Elegir foto</p>
                         <div className="avatar mb-2 mr-4">
-                          <figure className="image-avatar" style={{backgroundImage: `url(${this.state.imageToShow})`}}></figure>
+                          <figure className="image-avatar" style={{backgroundImage: `url(${photoToShow}`}}></figure>
                         </div>
                         <button type="button" className="btn btn-sm btn-warning mr-2" onClick={this.openFileWindow}>Cambiar</button>
-                        {this.state.data.photo &&
+                        {data.photo &&
                           <Fragment>
                             <button type="button" className="btn btn-sm btn-outline-dark mr-2" onClick={this.clearImage}>Quitar</button>
                             <button type="button" className="btn btn-sm btn-outline-dark" onClick={() => this.resizeFile(this.state.data.photo, this.state.rotate + 90)}><i className="iconsminds-rotation" /></button>
                           </Fragment>                         
                         }
-                        <input type="file" id="image-file" className="form-control d-none" name="photo" onChange={this.handleFileChange}/>
+                        <input
+                          ref={this.fileInputRef}
+                          type="file" 
+                          id="image-file" 
+                          className="d-none" 
+                          name="photo" 
+                          onChange={this.handleFileChange}
+                        />
 
                         
                         <h6 className="mb-4 text-primary mt-5">Referencia personal</h6>
