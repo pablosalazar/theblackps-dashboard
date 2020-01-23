@@ -98,7 +98,6 @@ class Topnav extends Component {
   render() {
     const { containerClassnames, menuClickCount } = this.props;
     const { user } = this.state;
-    console.log( `${RESOURCE_URL}/img/${user.image})`);
     return (
       <nav className="navbar fixed-top">
         <div className="d-flex align-items-center navbar-left">

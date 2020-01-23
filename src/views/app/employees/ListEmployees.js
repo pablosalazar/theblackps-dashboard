@@ -8,7 +8,6 @@ import Pagination from "../../../containers/pages/Pagination";
 import ListPageHeading from "../../../containers/pages/ListPageHeading";
 import avatar from '../../../assets/avatar.png';
 class ListEmployees extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
