@@ -39,6 +39,12 @@ const data = [
     ]
   },
   {
+    id: "vehiculos",
+    icon: "iconsminds-car",
+    label: "Vehículos",
+    to: "/vehiculos"
+  },
+  {
     id: "clientes",
     icon: "iconsminds-male-female",
     label: "Clientes",
