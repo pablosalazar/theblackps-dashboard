@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect } from "react-router-dom";
 
 import AppLayout from "../../../layout/AppLayout";
-import ListVehicles from "./ListVehicles"
+import ListVehicles from "./ListVehicles";
+import AddVehicle from "./AddVehicle";
 
 class Vehicles extends Component {
     render() {
@@ -12,6 +13,7 @@ class Vehicles extends Component {
                 <Switch>
                     <Redirect exact from={`${match.url}/`} to={`${match.url}/lista`} />
                     <Route path={`${match.url}/lista`} component={ListVehicles} />
+                    <Route path={`${match.url}/nuevo`} component={AddVehicle} />
                 </Switch>
             </AppLayout>
         );
