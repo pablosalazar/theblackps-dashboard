@@ -3,6 +3,7 @@ import { Row } from "reactstrap";
 import { Colxx, Separator } from "../../../components/common/CustomBootstrap";
 import Breadcrumb from "../../../containers/navs/Breadcrumb";
 import { NavLink } from 'react-router-dom';
+import FormVehicle from '../../../containers/forms/FormVehicle';
 
 export default class AddVehicle extends Component {
     render() {
@@ -19,7 +20,7 @@ export default class AddVehicle extends Component {
             </Row>
             <Row>
                 <Colxx xs="6" md="6" className="mb-3">
-                    <h1>The form goes here</h1>
+                    <FormVehicle />
                 </Colxx>
             </Row>
         </Fragment>
