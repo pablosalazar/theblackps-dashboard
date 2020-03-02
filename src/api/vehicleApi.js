@@ -10,7 +10,6 @@ function getAxiosIntance() {
     });
     return axiosInstance;
 }
-
 export async function getVehicles(pageSize, page, orderBy, search) {
     try {
       const data  = await getAxiosIntance().get(`/vehicles?pageSize=${pageSize}
@@ -23,3 +22,44 @@ export async function getVehicles(pageSize, page, orderBy, search) {
       throw error.response ? error.response.data.error : error.message;
     }
 }
+export async function getVehicle(id) {
+  try {
+      const data  = await getAxiosIntance().get(`vehicles/${id}`);
+      return data.data;
+  } catch (error) {
+      throw error.response ? error.response.data.error : error.message;
+  }
+}
+export async function deleteVehicle(id) {
+  try {
+    const data  = await getAxiosIntance().delete(`/vehicles/${id}`);
+    return data.data;
+  } catch (error) {
+    throw error.response ? error.response.data.error : error.message;
+  }
+}
+export async function createVehicle(vehicle){
+    try {
+        const data  = await getAxiosIntance().post('vehicles', getFormData(vehicle));
+        return data.data;
+    } catch (error) {
+        throw error.response ? error.response.data.error : error.message;
+    }
+}
+export async function updateVehicle(vehicleId, vehicle) {
+    try {
+        const data  = await getAxiosIntance().post(`vehicles/${vehicleId}`, getFormData(vehicle, 'PUT'));
+        return data.data;
+    } catch (error) {
+        throw error.response ? error.response.data.error : error.message;
+    }
+}
+function getFormData(object, method) {
+    const formData = new FormData();
+
+    Object.keys(object).forEach(key => formData.append(key, object[key]));
+    if (method === 'PUT') {
+        formData.append('_method', 'PUT');
+    }
+    return formData;
+  }
