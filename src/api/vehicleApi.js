@@ -30,14 +30,6 @@ export async function getVehicle(id) {
       throw error.response ? error.response.data.error : error.message;
   }
 }
-export async function deleteVehicle(id) {
-  try {
-    const data  = await getAxiosIntance().delete(`/vehicles/${id}`);
-    return data.data;
-  } catch (error) {
-    throw error.response ? error.response.data.error : error.message;
-  }
-}
 export async function createVehicle(vehicle){
     try {
         const data  = await getAxiosIntance().post('vehicles', getFormData(vehicle));
@@ -53,6 +45,30 @@ export async function updateVehicle(vehicleId, vehicle) {
     } catch (error) {
         throw error.response ? error.response.data.error : error.message;
     }
+}
+export async function deleteVehicle(id) {
+  try {
+    const data  = await getAxiosIntance().delete(`/vehicles/${id}`);
+    return data.data;
+  } catch (error) {
+    throw error.response ? error.response.data.error : error.message;
+  }
+}
+export async function addCustomer(vehicleId, customerId){
+  try {
+    const data  = await getAxiosIntance().post(`/vehicles/${vehicleId}/customers`,  getFormData({customer_id:customerId}));
+    return data.data;
+  } catch (error) {
+    throw error.response ? error.response.data.error : error.message;
+  }
+}
+export async function deleteCustomer(vehicleId, customerId){
+  try {
+    const data  = await getAxiosIntance().delete(`/vehicles/${vehicleId}/customers/${customerId}`);
+    return data.data;
+  } catch (error) {
+    throw error.response ? error.response.data.error : error.message;
+  }
 }
 function getFormData(object, method) {
     const formData = new FormData();

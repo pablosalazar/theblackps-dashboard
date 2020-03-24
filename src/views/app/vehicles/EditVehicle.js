@@ -14,22 +14,26 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
+    Label
   } from "reactstrap";
+import Select from 'react-select'
 
-import { getVehicle, deleteVehicle } from "../../../api/vehicleApi";
+import { getCustomers } from "../../../api/customerApi";
+import { getVehicle, deleteVehicle, addCustomer ,deleteCustomer } from "../../../api/vehicleApi";
 
 export default class EditVehicle extends Component {
     constructor(props) {
         super(props);
         this.state = {
           vehicle: {},
-          customers: [],
-          customerName: '',
+          currentCustomer: '',
           isLoading: true,
           error: null,
           modalOpen: false,
-          showCustomerModal: false,
+          showAddCustomerModal: false,
+          showDeleteCustomerModal: false,
           redirect: false,
+          customerList: null
         }
     }
 
@@ -65,11 +69,68 @@ export default class EditVehicle extends Component {
           })
         }
     }
-    deleteCustomerVehicle = () =>{
-        console.log("relation deleted")
+    addCustomerVehicle = async () =>{
+        const { vehicle, currentCustomer } = this.state;
+        const customerId = currentCustomer ? currentCustomer.id : null
+
+        console.log(customerId)
+
+        if(!customerId) return;
+
+        try {
+            await addCustomer(vehicle.id, customerId);
+            this.setState({
+                currentCustomer: null,
+                showAddCustomerModal: !this.state.showAddCustomerModal,
+                isLoading: true
+            })
+            this.getVehicle(vehicle.id);
+        } catch (error) {
+            this.setState({
+              error,
+            })
+        }
+    }
+    deleteCustomerVehicle = async () =>{
+        const { vehicle, currentCustomer } = this.state;
+        const customerId = currentCustomer ? currentCustomer.id : null
+
+        if(!customerId) return;
+
+        try {
+            await deleteCustomer(vehicle.id, customerId);
+            this.setState({
+                currentCustomer: null,
+                showDeleteCustomerModal: !this.state.showDeleteCustomerModal,
+                isLoading: true
+            })
+            this.getVehicle(vehicle.id);
+        } catch (error) {
+            this.setState({
+              error,
+            })
+        }
+    }
+    getCustomerList = async () =>{
+        try {
+            const response = await getCustomers(50, 1, 'name', '');
+
+            let customerList = response.data.map( customer =>{
+                return {value: customer.id, label: customer.name, target: {name: 'customer_id'} }
+            });
+
+            this.setState({
+                customerList: customerList,
+            })
+        } catch (error) {
+            this.setState({
+                error,
+            })
+        }
+    }
+    customerSelected = (e) =>{
         this.setState({
-            customerName: '',
-            showCustomerModal: !this.state.showCustomerModal
+            currentCustomer: {id: e.value}
         })
     }
     toggleModal = () => {
@@ -77,14 +138,23 @@ export default class EditVehicle extends Component {
           modalOpen: !this.state.modalOpen
         });
     }
-    toggleCustomerModal = (customerName) =>{
+    toggleAddCustomerModal = () =>{
+        const { customerList } = this.state
+
+        if(!customerList) this.getCustomerList()
+
         this.setState({
-            customerName: customerName,
-            showCustomerModal: !this.state.showCustomerModal
+            showAddCustomerModal: !this.state.showAddCustomerModal
+        })
+    }
+    toggleDeleteCustomerModal = (customer) =>{
+        this.setState({
+            currentCustomer: customer,
+            showDeleteCustomerModal: !this.state.showDeleteCustomerModal
         })
     }
     render() {
-        const { vehicle, isLoading, customerName, error, modalOpen, showCustomerModal, redirect } = this.state;
+        const { vehicle, isLoading, currentCustomer, error, modalOpen, showAddCustomerModal, showDeleteCustomerModal, redirect, customerList } = this.state;
         if (redirect) {
             return <Redirect to='/vehiculos/lista'/>;
         }
@@ -109,18 +179,27 @@ export default class EditVehicle extends Component {
                 <Colxx xs="6" md="6" className="mb-3">
                     <Card>
                         <CardBody>
-                            <h6 className="mb-4 text-primary">Clientes asociados al vehículo</h6>
-                            <div className="dashboard-list-with-user">
+                            <Row>
+                                <Colxx md="9">
+                                    <h6 className="mb-4 text-primary">Clientes asociados al vehículo</h6>
+                                </Colxx>
+                                <Colxx md="3" className="text-right">
+                                    <Button color="primary" size="sm" onClick={this.toggleAddCustomerModal}>Añadir</Button>
+                                </Colxx>
+                            </Row>
+                            <div>
                                 {vehicle.customers.map( (customer, index) => {
                                     return (
                                         <div key={index} className="d-flex flex-row mb-3 pb-3 border-bottom">
-                                         <Avatar name={customer.name} size="30" round={true}/>
-                                          <div className="pl-3 pr-2">
-                                              <p className="font-weight-medium mb-0 ">{customer.name}</p>
-                                              <p className="text-muted mb-0 text-small">
-                                                {customer.updated_at} | <NavLink to="#" onClick={() => this.toggleCustomerModal(customer.name)} className=" btn-link mr-3">Eliminar </NavLink>
-                                              </p>
-                                          </div>
+                                            <Avatar name={customer.name} size="30" round={true}/>
+                                            <div className="pl-3 pr-2">
+                                                <NavLink to={"/clientes/detalle/" + customer.id }>
+                                                    <p className="font-weight-medium mb-0 ">{customer.name}</p>
+                                                </NavLink>
+                                                <p className="text-muted mb-0 text-small">
+                                                    {customer.updated_at} | <NavLink to="#" onClick={() => this.toggleDeleteCustomerModal(customer)} className=" btn-link text-danger mr-3">Eliminar </NavLink>
+                                                </p>
+                                            </div>
                                         </div>
                                     );
                                 })}
@@ -141,15 +220,33 @@ export default class EditVehicle extends Component {
                     <Button color="secondary" onClick={this.deleteVehicle}>Sí­, Eliminar</Button>
                 </ModalFooter>
             </Modal>
-            <Modal isOpen={showCustomerModal} toggle={this.toggle}>
+            <Modal isOpen={showAddCustomerModal} toggle={this.toggle}>
                 <ModalHeader toggle={this.toggle}>
-                    Borrar vehículo
+                    Añadir cliente
                 </ModalHeader>
                 <ModalBody>
-                    ¿Desea borrar la relación de <span className="text-primary">{customerName}</span> con este vehículo?
+                    {customerList && customerList.length > 0 &&
+                        <Fragment>
+                            <Label>Cliente</Label>
+                            <Select className="form-control" name="customer_id" options={customerList} onChange={this.customerSelected}/>
+                        </Fragment>
+                    }
+                    {!customerList && <Fragment>Cargando lista...</Fragment>}
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="dark" outline onClick={() => this.toggleCustomerModal('')}>No, Cancelar</Button>
+                    <Button color="dark" outline onClick={() => this.toggleAddCustomerModal()}>Cancelar</Button>
+                    <Button color="primary" onClick={this.addCustomerVehicle}>Añadir</Button>
+                </ModalFooter>
+            </Modal>
+            <Modal isOpen={showDeleteCustomerModal} toggle={this.toggle}>
+                <ModalHeader toggle={this.toggle}>
+                    Borrar cliente
+                </ModalHeader>
+                <ModalBody>
+                    ¿Desea borrar la relación de <span className="text-primary">{currentCustomer? currentCustomer.name : ''}</span> con este vehículo?
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="dark" outline onClick={() => this.toggleDeleteCustomerModal(null)}>No, Cancelar</Button>
                     <Button color="secondary" onClick={this.deleteCustomerVehicle}>Sí­, Eliminar</Button>
                 </ModalFooter>
             </Modal>
