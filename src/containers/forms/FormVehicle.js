@@ -15,13 +15,14 @@ export default class FormVehicle extends Component {
     constructor(props){
         super(props);
 
-        let data = props.vehicle || { brand:'', plate:'', color:'', customer_id:''}
+        let data = props.vehicle || { brand:'', plate:'', color:''}
 
         this.state = {
             data,
             loading: false,
             error: null,
             redirect: false,
+            lastVehicleId: null,
             action: props.vehicle ? 'edit' : 'create',
             customerList: null
         }
@@ -71,8 +72,10 @@ export default class FormVehicle extends Component {
 
         if(action == 'create'){
             try{
-                await createVehicle(data)
-                this.setState({loading: false, redirect: true});
+                createVehicle(data).then(res =>{
+                    this.setState({loading: false, redirect: true, lastVehicleId: res.id});
+                })
+                
             }catch(error){
                 this.setState({ error, loading: false });
                 scrollToTop(500);
@@ -117,9 +120,9 @@ export default class FormVehicle extends Component {
     }
 
     render() {
-        const { data, loading, error, redirect, action, customerList } = this.state;
+        const { data, loading, error, redirect, lastVehicleId, action, customerList } = this.state;
         if (redirect) {
-            return <Redirect to='/vehiculos/lista'/>;
+            return <Redirect to={'/vehiculos/detalle/' + lastVehicleId + '?new=true'} />;
         }
         return(
             <Row className="mb-4">
@@ -160,13 +163,6 @@ export default class FormVehicle extends Component {
                                             <Field className="form-control" name="color" value={data.color} onChange={this.handleOnChange} />
                                             {errors.color && touched.color && <div className="invalid-feedback d-block">{errors.color}</div>}
                                         </FormGroup>
-                                        {action == 'create' &&
-                                            <FormGroup>
-                                                <Label>Cliente</Label>
-                                                <Select className="form-control" name="customer_id" options={customerList} value={data.customer_id} onChange={this.handleOnChange}/>
-                                                {errors.customer_id && touched.customer_id && <div className="invalid-feedback d-block">{errors.customer_id}</div>}
-                                            </FormGroup>
-                                        }
                                         </Colxx>
                                         </Row>
                                         <div className="mt-5 text-right">

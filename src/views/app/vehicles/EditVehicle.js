@@ -30,6 +30,7 @@ export default class EditVehicle extends Component {
           isLoading: true,
           error: null,
           showError: false,
+          isNewVehicle: false,
           modalOpen: false,
           showAddCustomerModal: false,
           showDeleteCustomerModal: false,
@@ -40,6 +41,10 @@ export default class EditVehicle extends Component {
 
     componentDidMount(){
         const vehicleId = this.props.match.params.vehicleId;
+        const paramsString = this.props.location.search;
+        const queryParams = new URLSearchParams(paramsString);
+
+        this.setState({isNewVehicle: queryParams.get("new") == 'true' || false});
         this.getVehicle(vehicleId);
     }
     getVehicle = async(vehicleId) =>{
@@ -160,8 +165,16 @@ export default class EditVehicle extends Component {
             showError: false
         })
     }
+    onDismissNewVehicleAlert = () =>{
+        let history = this.props.history;
+
+        this.setState({
+            isNewVehicle: false
+        })
+        history.push("/vehiculos/detalle/" + this.props.match.params.vehicleId);
+    }
     render() {
-        const { vehicle, isLoading, currentCustomer, error, showError, modalOpen, showAddCustomerModal, showDeleteCustomerModal, redirect, customerList } = this.state;
+        const { vehicle, isLoading, currentCustomer, error, showError, isNewVehicle, modalOpen, showAddCustomerModal, showDeleteCustomerModal, redirect, customerList } = this.state;
         if (redirect) {
             return <Redirect to='/vehiculos/lista'/>;
         }
@@ -181,6 +194,16 @@ export default class EditVehicle extends Component {
                 </Row>
                 <Row>
                     <Colxx xs="6" md="6" className="mb-3">
+                        {isNewVehicle &&
+                            <Alert 
+                                color="success" 
+                                className="mb-4"
+                                isOpen={isNewVehicle}
+                                toggle={this.onDismissNewVehicleAlert}
+                                >
+                                Vehículo creado correctamente
+                            </Alert>
+                        }
                         <FormVehicle vehicle={vehicle}/>
                     </Colxx>
                     <Colxx xs="6" md="6" className="mb-3">
