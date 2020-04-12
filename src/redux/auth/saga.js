@@ -15,24 +15,23 @@ import {
 
 const loginWithCredentialsAsync = async (login, password) => {
   try {
-    const response = await axios.post(API_URL + BASE_URI + '/auth/login', {login, password});
+    const response = await axios.post(API_URL + BASE_URI + '/auth/login', { login, password });
     return response.data;
   } catch (error) {
-    throw error.response ? error.response.data.error : error.message;
-  } 
+    throw error.response ? error.response.statusText : error.message;
+  }
 }
 
 
 function* loginWithCredentials({ payload }) {
-  
   const { login, password } = payload.user;
   const { history } = payload;
   try {
-      const data = yield call(loginWithCredentialsAsync, login, password);
-      localStorage.setItem('token', data.access_token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      yield put(loginUserSuccess(data.user));
-      history.push('/');
+    const data = yield call(loginWithCredentialsAsync, login, password);
+    localStorage.setItem('token', data.access_token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    yield put(loginUserSuccess(data.user));
+    history.push('/');
   } catch (error) {
     yield put(loginUserFail(error));
   }
@@ -40,22 +39,18 @@ function* loginWithCredentials({ payload }) {
 
 
 const logoutAsync = async (history) => {
-  const Authorization =  `Bearer ${localStorage.getItem('token')}`;
+  const Authorization = `Bearer ${localStorage.getItem('token')}`;
   await axios.get(API_URL + BASE_URI + '/auth/logout', { headers: { Authorization: Authorization } })
-  .then(authUser => authUser)
-  .catch(error => error);
+    .then(authUser => authUser)
+    .catch(error => error);
   history.push('/')
 }
 
-function* logout({payload}) {
+function* logout({ payload }) {
   const { history } = payload
-  try {
-      yield call(logoutAsync,history);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-  } catch (error) {
- 
-  }
+  yield call(logoutAsync, history);
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
 }
 
 export function* watchLoginUser() {
@@ -68,7 +63,7 @@ export function* watchLogoutUser() {
 
 export default function* rootSaga() {
   yield all([
-      fork(watchLoginUser),
-      fork(watchLogoutUser),
+    fork(watchLoginUser),
+    fork(watchLogoutUser),
   ]);
 }

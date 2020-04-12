@@ -7,7 +7,7 @@ import { loginUser } from "../../redux/actions";
 import { Colxx } from "../../components/common/CustomBootstrap";
 
 class Login extends Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -30,25 +30,25 @@ class Login extends Component {
   }
 
   onUserLogin = async () => {
-    this.setState({ isLoading: true, error: null});
-    
+    this.setState({ isLoading: true, error: null });
+
     if (this.state.login !== "" && this.state.password !== "") {
-      
-      
+      try {
         const user = await this.props.loginUser(this.state, this.props.history);
-        
-   
+      } catch (error) {
+        this.setState({ error });
+      }
     } else {
-      this.setState({error: "Ingresa los campos para iniciar sesión"});
+      this.setState({ error: "Ingresa los campos para iniciar sesión" });
     }
   }
 
   render() {
     const { isLoading, error } = this.state;
-    
+
     return (
       <Row className="h-100">
-        
+
         <Colxx xxs="12" md="10" className="mx-auto my-auto">
           <Card className="auth-card">
             <div className="position-relative image-side ">
@@ -75,13 +75,13 @@ class Login extends Component {
                 Iniciar sesión
               </CardTitle>
               <Form>
-              
+
                 <Label className="form-group has-float-label mb-4">
                   <Input type="text" name="login" value={this.state.login} onChange={this.handleChange} />
                   <span>Ingresa tu usuario o correo electrónico</span>
                 </Label>
                 <Label className="form-group has-float-label mb-4">
-                  <Input type="password" name="password" autoComplete="off" value={this.state.password} onChange={this.handleChange} onKeyDown={this.handleKeyDown}/>
+                  <Input type="password" name="password" autoComplete="off" value={this.state.password} onChange={this.handleChange} onKeyDown={this.handleKeyDown} />
                   <span>Contraseña</span>
                 </Label>
                 <div className="d-flex justify-content-between align-items-center">
@@ -97,7 +97,7 @@ class Login extends Component {
                   >
                     ENTRAR
                   </Button>
-                  
+
                 </div>
               </Form>
             </div>

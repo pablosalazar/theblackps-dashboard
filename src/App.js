@@ -22,20 +22,20 @@ const AuthRoute = ({ component: Component, authUser, ...rest }) => (
       authUser ? (
         <Component {...props} />
       ) : (
-        <Redirect
-          to={{
-            pathname: "/auth/login",
-            state: { from: props.location }
-          }}
-        />
-      )
+          <Redirect
+            to={{
+              pathname: "/auth/login",
+              state: { from: props.location }
+            }}
+          />
+        )
     }
   />
 );
 
 
 class App extends Component {
-  
+
   render() {
     const { loginUser } = this.props;
 
@@ -54,7 +54,7 @@ class App extends Component {
               <Redirect to="/error" />
             </Switch>
           </Router>
-        </React.Fragment>  
+        </React.Fragment>
       </div>
     )
   }
