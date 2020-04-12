@@ -24,16 +24,19 @@ class EditEmployee extends Component {
       redirect: false,
     }
   }
-  
+
   componentDidMount() {
     const employeeId = this.props.match.params.employeeId;
     this.getEmployee(employeeId);
   }
 
-  getEmployee = async(id) => {
+  getEmployee = async (id) => {
     try {
       const employee = await getEmployee(id);
-  
+
+      if (!employee.user) employee.user = {};
+      if (!employee.contact) employee.contact = {};
+
       this.setState({
         employee,
         isLoading: false,
@@ -69,43 +72,43 @@ class EditEmployee extends Component {
   render() {
     const { employee, isLoading, error, modalOpen, redirect } = this.state;
     if (redirect) {
-      return <Redirect to='/empleados/lista'/>;
+      return <Redirect to='/empleados/lista' />;
     }
     return isLoading ? (
       <div className="loading" />
     ) : (
-      <Fragment>
-        <Row>
-          <Colxx xxs="12">
-            <Breadcrumb heading="Detalle del empleado" match={this.props.match} />
-            <div className="text-zero top-right-button-container">
-              <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Eliminar empleado </button>
-              <NavLink to="/empleados/lista" className="btn btn-sm btn-outline-dark mr-3">Salir </NavLink>
-            </div>
-            <Separator className="mb-5" />
-          </Colxx>
-        </Row>
-        <Row>
-          <Colxx xs="12" md="12" className="mb-3">
-            {error? 
-              <Alert
-                color="danger"
-              >
-                {error}
-              </Alert>
-              :
-              <FormEmployee employee={employee} />
-            }
-          </Colxx>    
-        </Row>
-        <DeleteEmployeeModal 
-          employee={employee} 
-          toggleModal={this.toggleModal} 
-          modalOpen={modalOpen}
-          handleSubmit={this.deleteEmployee}
-        />
-      </Fragment>
-    );
+        <Fragment>
+          <Row>
+            <Colxx xxs="12">
+              <Breadcrumb heading="Detalle del empleado" match={this.props.match} />
+              <div className="text-zero top-right-button-container">
+                <button type="button" className="btn btn-sm btn-secondary mr-5" onClick={this.toggleModal}>Eliminar empleado </button>
+                <NavLink to="/empleados/lista" className="btn btn-sm btn-outline-dark mr-3">Salir </NavLink>
+              </div>
+              <Separator className="mb-5" />
+            </Colxx>
+          </Row>
+          <Row>
+            <Colxx xs="12" md="12" className="mb-3">
+              {error ?
+                <Alert
+                  color="danger"
+                >
+                  {error}
+                </Alert>
+                :
+                <FormEmployee employee={employee} />
+              }
+            </Colxx>
+          </Row>
+          <DeleteEmployeeModal
+            employee={employee}
+            toggleModal={this.toggleModal}
+            modalOpen={modalOpen}
+            handleSubmit={this.deleteEmployee}
+          />
+        </Fragment>
+      );
   }
 }
 
