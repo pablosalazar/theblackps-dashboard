@@ -3,7 +3,7 @@ import { Route, withRouter, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import AppLayout from "../../layout/AppLayout";
-import blankPage from "./blank-page";
+import ParkingServices from "./parking-services";
 
 class App extends Component {
   render() {
@@ -11,8 +11,8 @@ class App extends Component {
     return (
       <AppLayout>
         <Switch>
-          <Redirect exact from={`${match.url}/`} to={`${match.url}/blank-page`} />
-          <Route path={`${match.url}/blank-page`} component={blankPage} />
+          <Redirect exact from={`${match.url}/`} to={`${match.url}/servicio-de-parqueo`} />
+          <Route path={`${match.url}/servicio-de-parqueo`} component={ParkingServices} />
           <Redirect to="/error" />
         </Switch>
       </AppLayout>
