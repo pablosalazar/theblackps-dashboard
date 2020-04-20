@@ -12,6 +12,7 @@ import app from "./views/app";
 import Employees from "./views/app/employees";
 import Vehicles from "./views/app/vehicles";
 import Customers from "./views/app/customers";
+import ParkingServices from "./views/app/parking-services";
 import Auth from './views/Auth';
 import error from "./views/error";
 
@@ -48,6 +49,7 @@ class App extends Component {
               <Route path="/empleados" component={Employees} />
               <Route path="/vehiculos" component={Vehicles} />
               <Route path="/clientes" component={Customers} />
+              <Route path="/servicios-de-parqueo" component={ParkingServices} />
               <Route path="/auth" component={Auth} />
               <Route path="/error" exact component={error} />
               <Route path="/" exact component={main} />
