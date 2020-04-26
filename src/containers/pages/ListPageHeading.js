@@ -63,10 +63,10 @@ class ListPageHeading extends Component {
 
           <div className="mb-2">
             <Collapse
-                isOpen={displayOptionsIsOpen}
-                className="d-md-block"
-                id="displayOptions"
-              >
+              isOpen={displayOptionsIsOpen}
+              className="d-md-block"
+              id="displayOptions"
+            >
               <div className="d-block d-md-inline-block">
                 <UncontrolledDropdown className="mr-1 float-md-left btn-group mb-1">
                   <DropdownToggle caret color="outline-dark" size="xs">
