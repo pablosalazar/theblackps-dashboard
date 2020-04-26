@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, withRouter, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 import AppLayout from "../../../layout/AppLayout";
 import ListParkingServices from "./ListParkingServices";

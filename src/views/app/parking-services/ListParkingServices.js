@@ -31,6 +31,7 @@ class ListParkingServices extends Component {
       totalPage: 1,
       search: "",
     }
+    this.today = new Date();
   }
 
   componentDidMount() {
@@ -61,8 +62,13 @@ class ListParkingServices extends Component {
     }
   }
 
-  formatDate = (date) => {
-    return moment(date).format("L")
+  formatDate = (d) => {
+    const date = moment(date).format("L");
+
+    var a = moment(this.today);
+    var b = moment(d);
+    console.log(a.to(b));
+    return d;
   }
 
 
@@ -87,14 +93,14 @@ class ListParkingServices extends Component {
             <Colxx xxs="12" className="mb-3">
               <Alert color="dark">
                 No se encontraron resultados
-                      </Alert>
+              </Alert>
             </Colxx>
             :
             <Colxx xxs="12" className="mb-3">
               <Card className="mb-4">
                 <CardBody>
                   <CardTitle>
-                    Vehículos ({totalItemCount})
+                    Servicios de parqueo ({totalItemCount})
                   </CardTitle>
                   <Table responsive className="table table-hover">
                     <thead className="text-primary">
