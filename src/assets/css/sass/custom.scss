@@ -19,7 +19,6 @@
   background-size: cover;
 }
 
-
 .avatar {
   display: inline-block;
   width: 130px;
@@ -85,20 +84,22 @@ table td.td-actions {
   }
 }
 
-
 .react-datepicker__header__dropdown {
   margin: 15px 0;
 }
 
-.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
-  color: #b1b1b1!important;
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name {
+  color: #b1b1b1 !important;
 }
 
 .react-datepicker__day--disabled {
-  color: #666!important;
+  color: #666 !important;
 }
 
-.react-datepicker__current-month, .react-datepicker-time__header {
+.react-datepicker__current-month,
+.react-datepicker-time__header {
   color: #b98700 !important;
 }
 
@@ -128,6 +129,10 @@ table td.td-actions {
   margin-right: 15px;
 }
 
-.text-danger{
-  color: #aa4f43 !important
+.text-danger {
+  color: #aa4f43 !important;
+}
+
+.table tr:hover {
+  cursor: pointer;
 }

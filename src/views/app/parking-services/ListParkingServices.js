@@ -113,7 +113,7 @@ class ListParkingServices extends Component {
   }
 
   goToDetails = (id) => {
-
+    this.props.history.push(`/servicios-de-parqueo/detalle/${id}`);
   }
 
   render() {
@@ -170,18 +170,13 @@ class ListParkingServices extends Component {
                             <td>Última actualización</td>
                             <th>Hora</th>
                             <th>Estado</th>
-                            <th className="text-center">Acciones</th>
                           </tr>
                         </thead>
                         <tbody>
                           {items.map((item, index) => (
                             <tr key={index} onClick={() => this.goToDetails(item.id)}>
                               <td>{item.serial}</td>
-                              <td>
-                                <NavLink to={`/servicios-de-parqueo/detalle/${item.id}`}>
-                                  {item.plate}
-                                </NavLink>
-                              </td>
+                              <td>{item.plate}</td>
                               <td>{item.customer}</td>
                               <td>{this.formatDate(item.created_at)}</td>
                               <td>{this.formatDate(item.updated_at)}</td>
@@ -191,11 +186,6 @@ class ListParkingServices extends Component {
                                   {item.status}
                                 </span>
 
-                              </td>
-                              <td className="td-actions text-center">
-                                <NavLink to={`/servicios-de-parqueo/detalle/${item.id}`} className="text-center">
-                                  <i className="glyph-icon simple-icon-eye"></i>
-                                </NavLink>
                               </td>
                             </tr>
                           ))}
