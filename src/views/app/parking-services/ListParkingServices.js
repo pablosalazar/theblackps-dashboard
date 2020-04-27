@@ -51,7 +51,7 @@ class ListParkingServices extends Component {
       const response = await getParkingServices(selectedPageSize, currentPage, selectedOrderOption.column, search);
       this.setState({
         totalPage: response.last_page,
-        items: response.data,
+        items: response.data || [],
         totalItemCount: response.total,
         isLoading: false,
       });
@@ -125,88 +125,108 @@ class ListParkingServices extends Component {
     const startIndex = (currentPage - 1) * selectedPageSize;
     const endIndex = currentPage * selectedPageSize;
 
-    return isLoading ? (
-      <div className="loading" />
-    ) : (
-        <Fragment>
-          <div className="disable-text-selection">
-            <ListPageHeading
-              heading='Lista de servicios de parqueo'
-              match={match}
-              startIndex={startIndex}
-              endIndex={endIndex}
-              url='/servicios-de-parqueo'
-              totalItemCount={totalItemCount}
-              selectedPageSize={selectedPageSize}
-              changeOrderBy={this.changeOrderBy}
-              changePageSize={this.changePageSize}
-              selectedOrderOption={selectedOrderOption}
-              onSearchKey={this.onSearchKey}
-              orderOptions={orderOptions}
-              pageSizes={pageSizes}
-            />
-            <Row>
-              {items.length === 0 ?
-                <Colxx xxs="12" className="mb-3">
-                  <Alert color="dark">
-                    No se encontraron resultados
-                </Alert>
-                </Colxx>
-                :
-                <Colxx xxs="12" className="mb-3">
-                  <Card className="mb-4">
-                    <CardBody>
-                      <CardTitle>
-                        Servicios de parqueo ({totalItemCount})
-                    </CardTitle>
-                      <Table responsive className="table table-hover">
-                        <thead className="text-primary">
-                          <tr>
-                            <th>Serial</th>
-                            <th>Marca</th>
-                            <th>Placa</th>
-                            <th>Cliente</th>
-                            <th>Número documento</th>
-                            <th>Ingreso</th>
-                            <th>Última actualización</th>
-                            <th>Hora</th>
-                            <th>Estado</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {items.map((item, index) => (
-                            <tr key={index} onClick={() => this.goToDetails(item.id)}>
-                              <td>{item.serial}</td>
-                              <td>{item.brand}</td>
-                              <td>{item.plate}</td>
-                              <td>{item.customer}</td>
-                              <td>{item.document_number}</td>
-                              <td>{this.formatDate(item.created_at)}</td>
-                              <td>{this.formatDate(item.updated_at)}</td>
-                              <td>{moment(item.created_at).format("h:mm A")}</td>
-                              <td>
-                                <span className={`mb-1 badge badge-${statusColors[item.status]} badge-pill`}>
-                                  {item.status}
-                                </span>
+    if (isLoading) {
+      return <div className="loading" />
+    }
 
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </CardBody>
-                  </Card>
-                </Colxx>
-              }{" "}
-              <Pagination
-                currentPage={this.state.currentPage}
-                totalPage={this.state.totalPage}
-                onChangePage={i => this.onChangePage(i)}
-              />
-            </Row>
-          </div>
-        </Fragment >
+    if (error) {
+      return (
+        <div className="alert alert-warning">
+          {error}
+        </div>
       );
+    }
+
+
+    return (
+      <Fragment >
+        <div className="disable-text-selection">
+          <ListPageHeading
+            heading='Lista de servicios de parqueo'
+            match={match}
+            startIndex={startIndex}
+            endIndex={endIndex}
+            url='/servicios-de-parqueo'
+            totalItemCount={totalItemCount}
+            selectedPageSize={selectedPageSize}
+            changeOrderBy={this.changeOrderBy}
+            changePageSize={this.changePageSize}
+            selectedOrderOption={selectedOrderOption}
+            onSearchKey={this.onSearchKey}
+            orderOptions={orderOptions}
+            pageSizes={pageSizes}
+          />
+          <Row>
+            {error &&
+              <Alert
+                color="danger"
+                className="mb-4"
+                toggle={this.onDismiss}
+              >
+                {error}
+              </Alert>
+            }
+            {items.length === 0 ?
+              <Colxx xxs="12" className="mb-3">
+                <Alert color="dark">
+                  No se encontraron resultados
+                </Alert>
+              </Colxx>
+              :
+              <Colxx xxs="12" className="mb-3">
+                <Card className="mb-4">
+                  <CardBody>
+                    <CardTitle>
+                      Servicios de parqueo ({totalItemCount})
+                    </CardTitle>
+                    <Table responsive className="table table-hover">
+                      <thead className="text-primary">
+                        <tr>
+                          <th>Serial</th>
+                          <th>Marca</th>
+                          <th>Placa</th>
+                          <th>Cliente</th>
+                          <th>Número documento</th>
+                          <th>Ingreso</th>
+                          <th>Última actualización</th>
+                          <th>Hora</th>
+                          <th>Estado</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {items.map((item, index) => (
+                          <tr key={index} onClick={() => this.goToDetails(item.id)}>
+                            <td>{item.serial}</td>
+                            <td>{item.brand}</td>
+                            <td>{item.plate}</td>
+                            <td>{item.customer}</td>
+                            <td>{item.document_number}</td>
+                            <td>{this.formatDate(item.created_at)}</td>
+                            <td>{this.formatDate(item.updated_at)}</td>
+                            <td>{moment(item.created_at).format("h:mm A")}</td>
+                            <td>
+                              <span className={`mb-1 badge badge-${statusColors[item.status]} badge-pill`}>
+                                {item.status}
+                              </span>
+
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </CardBody>
+                </Card>
+              </Colxx>
+            }{" "}
+            <Pagination
+              currentPage={this.state.currentPage}
+              totalPage={this.state.totalPage}
+              onChangePage={i => this.onChangePage(i)}
+            />
+          </Row>
+        </div>
+      </Fragment >
+    );
   }
 }
 
