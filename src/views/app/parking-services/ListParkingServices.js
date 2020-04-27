@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { Row, Card, CardBody, CardTitle, Table, Alert } from "reactstrap";
-import { NavLink } from "react-router-dom";
 
 import moment from "moment";
 import { Colxx } from "../../../components/common/CustomBootstrap";
@@ -136,7 +135,7 @@ class ListParkingServices extends Component {
               match={match}
               startIndex={startIndex}
               endIndex={endIndex}
-              url='/vehiculos/nuevo'
+              url='/servicios-de-parqueo'
               totalItemCount={totalItemCount}
               selectedPageSize={selectedPageSize}
               changeOrderBy={this.changeOrderBy}
@@ -164,10 +163,12 @@ class ListParkingServices extends Component {
                         <thead className="text-primary">
                           <tr>
                             <th>Serial</th>
+                            <th>Marca</th>
                             <th>Placa</th>
                             <th>Cliente</th>
+                            <th>Número documento</th>
                             <th>Ingreso</th>
-                            <td>Última actualización</td>
+                            <th>Última actualización</th>
                             <th>Hora</th>
                             <th>Estado</th>
                           </tr>
@@ -176,8 +177,10 @@ class ListParkingServices extends Component {
                           {items.map((item, index) => (
                             <tr key={index} onClick={() => this.goToDetails(item.id)}>
                               <td>{item.serial}</td>
+                              <td>{item.brand}</td>
                               <td>{item.plate}</td>
                               <td>{item.customer}</td>
+                              <td>{item.document_number}</td>
                               <td>{this.formatDate(item.created_at)}</td>
                               <td>{this.formatDate(item.updated_at)}</td>
                               <td>{moment(item.created_at).format("h:mm A")}</td>
